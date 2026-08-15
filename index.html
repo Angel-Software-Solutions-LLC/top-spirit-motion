@@ -65,7 +65,7 @@
 
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
-    hud.textContent = (current+1) + " / " + slides.length + "  v6" + (clipsOn ? "" : "  [clips off - press T]");
+    hud.textContent = (current+1) + " / " + slides.length + "  v7" + (clipsOn ? "" : "  [clips off - press T]");
   }
 
   function commit(n){ current = n; paint(); tv.classList.remove("show"); }
@@ -103,6 +103,10 @@
 
     inTransit = true;
     var mySeq = ++seq;
+    /* PRECACHE the destination slide's bitmap so the fade-in lands on a
+       decoded image, never a decode stall. */
+    var destImg = slides[n].querySelector("img");
+    if(destImg && destImg.decode){ destImg.decode().catch(function(){}); }
     while(tv.firstChild) tv.removeChild(tv.firstChild);
     var s1=document.createElement("source"); s1.src=clip.replace(/\.mp4$/,".webm"); s1.type="video/webm";
     var s2=document.createElement("source"); s2.src=clip; s2.type="video/mp4";
@@ -115,6 +119,11 @@
     tv.ontimeupdate = function(){
       if(seq !== mySeq) return;
       if(!revealed && tv.currentTime > 0.2){ revealed = true; tv.classList.add("show"); }
+      /* EARLY SETTLE-EXIT: the clip carries a still safety tail after the
+         seal; end AT the settle point instead of waiting for 'ended'. */
+      if(tv.duration && tv.currentTime >= tv.duration - 1.2){
+        clearTimeout(guard); endTransit(n, mySeq);
+      }
     };
     var guard = setTimeout(function(){ endTransit(n, mySeq); }, 10000);  /* clip length + margin */
     tv.onended = function(){ clearTimeout(guard); endTransit(n, mySeq); };

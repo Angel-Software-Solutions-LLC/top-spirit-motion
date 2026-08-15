@@ -58,14 +58,16 @@
 
   /* Reduced motion: clips OFF BY DEFAULT but visibly and reversibly.
      The T choice persists in localStorage so a reload keeps it. */
-  var sysReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  /* Client share page: motion IS the content, so clips default ON for
+     every visitor (T still turns them off, remembered). */
+  var sysReduced = false;
   var stored = null;
   try { stored = localStorage.getItem("tpClips"); } catch(e){}
-  var clipsOn = stored ? (stored === "on") : !sysReduced;
+  var clipsOn = stored ? (stored === "on") : true;
 
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
-    hud.textContent = (current+1) + " / " + slides.length + "  v7" + (clipsOn ? "" : "  [clips off - press T]");
+    hud.textContent = (current+1) + " / " + slides.length + (clipsOn ? "" : "  [motion off - press T]");
   }
 
   function commit(n){ current = n; paint(); tv.classList.remove("show"); }
@@ -162,7 +164,7 @@
     go(current + (e.clientX > innerWidth/2 ? 1 : -1));
   });
 
-  if(sysReduced && !clipsOn){ setTimeout(function(){ note("system reduced motion detected: clips are off. Press T to enable (remembered)."); }, 400); }
+  try { console.log("motion build v8"); } catch(e){}
 
   window.__proto_state = function(){ return {current:current, inTransit:inTransit, clipsOn:clipsOn, sysReduced:sysReduced,
     videoTime:tv.currentTime, videoEnded:tv.ended, videoShown:tv.classList.contains("show")}; };

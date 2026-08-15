@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Angel Software Solutions - Executive Partner Briefing (Motion)</title>
+<style>
+  html,body{margin:0;height:100%;background:#06090c;overflow:hidden}
+  .slide{position:absolute;inset:0;opacity:0;transition:opacity .22s ease;pointer-events:none}
+  .slide.active{opacity:1}
+  .slide img{width:100%;height:100%;object-fit:cover;display:block}
+  /* video overlay uses the SAME fit mode as the stills so crops match exactly */
+  #tv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+      opacity:0;transition:opacity .4s ease;pointer-events:none;background:#06090c}
+  #tv.show{opacity:1}
+  .hud{position:fixed;left:18px;bottom:14px;color:#9fb2bf;font:12px/1.4 Consolas,monospace;
+       z-index:5;text-shadow:0 1px 3px #000}
+</style>
+</head>
+<body>
+<section class="slide active" id="s1" aria-label="Slide 1: One group AI strategy">
+  <img src="pslide1.png" alt="">
+</section>
+<section class="slide" id="s2" aria-label="Slide 2: The immediate risk">
+  <img src="pslide2.png" alt="">
+</section>
+<section class="slide" id="s3" aria-label="Slide 3: The brief as we understand it">
+  <img src="pslide3.png" alt="">
+</section>
+<section class="slide" id="s4" aria-label="Slide 4: Named accountability">
+  <img src="pslide4.png" alt="">
+</section>
+<section class="slide" id="s5" aria-label="Slide 5: The governance minimum">
+  <img src="pslide5.png" alt="">
+</section>
+<video id="tv" muted playsinline preload="auto" aria-hidden="true"></video>
+<div class="hud" id="hud"></div>
+<script>
+(function(){
+  "use strict";
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var tv = document.getElementById("tv");
+  var hud = document.getElementById("hud");
+  var current = 0, inTransit = false;
+
+  /* TEXT-LAYER SEPARATION: each clip carries ONLY the photography.
+     Frame 1 = slide N's background with the text hidden (so the fade-in
+     of the video reads as the text dissolving), and the final frames are
+     sealed onto slide N+1's exact text-free background. The fade back to
+     the real slide at the end is the text fading in, pixel-exact,
+     because the text IS the slide - it never passes through the model. */
+  var CLIPS = {
+    "0-1": "PartnerDA1-2.mp4",
+    "1-2": "PartnerDA2-3.mp4",
+    "2-3": "PartnerDA3-4.mp4",
+    "3-4": "PartnerDA4-5.mp4"
+  };
+
+  /* Reduced motion: clips OFF BY DEFAULT but visibly and reversibly.
+     The T choice persists in localStorage so a reload keeps it. */
+  var sysReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var stored = null;
+  try { stored = localStorage.getItem("tpClips"); } catch(e){}
+  var clipsOn = stored ? (stored === "on") : !sysReduced;
+
+  function paint(){
+    slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
+    hud.textContent = (current+1) + " / " + slides.length + "  v5" + (clipsOn ? "" : "  [clips off - press T]");
+  }
+
+  function commit(n){ current = n; paint(); tv.classList.remove("show"); }
+
+  /* Every transition gets a generation number. Any callback minted by a
+     transition (timeupdate reveal, ended, error, play() rejection, the
+     guard timer, cleanup) carries its generation and no-ops if a skip
+     or a newer transition has moved the world on. Without this, a skip
+     before the reveal point leaves the video PLAYING and its timeupdate
+     re-shows the overlay over the committed slide - the stuck-frame
+     bug. */
+  var seq = 0;
+
+  function endTransit(n, mySeq){
+    if(mySeq !== undefined && mySeq !== seq) return;   /* stale caller */
+    if(!inTransit) return;
+    inTransit = false;
+    seq++;                                   /* invalidate every callback */
+    try { tv.pause(); } catch(e){}
+    tv.ontimeupdate = tv.onended = tv.onerror = null;
+    commit(n);                               /* also hides the overlay */
+    setTimeout(function(){
+      if(!inTransit){ while(tv.firstChild) tv.removeChild(tv.firstChild); try{ tv.load(); }catch(e){} }
+    }, 500);                                 /* after the fade-out */
+  }
+
+  function go(n){
+    if(inTransit){ return; }
+    if(n < 0 || n >= slides.length || n === current) return;
+    var key = current + "-" + n;
+    var clip = CLIPS[key];
+    var forward = n > current;
+    if(!forward || !clip){ commit(n); return; }
+    if(!clipsOn){ commit(n); note("clip skipped: clips are off. Press T to play clips."); return; }
+
+    inTransit = true;
+    var mySeq = ++seq;
+    while(tv.firstChild) tv.removeChild(tv.firstChild);
+    var s1=document.createElement("source"); s1.src=clip.replace(/\.mp4$/,".webm"); s1.type="video/webm";
+    var s2=document.createElement("source"); s2.src=clip; s2.type="video/mp4";
+    tv.appendChild(s1); tv.appendChild(s2);
+    tv.load();
+    /* EARLY REVEAL: the clip's first frame is the current slide's
+       background WITHOUT text, so fading the video in promptly IS the
+       text-dissolve moment. A short delay just ensures playback started. */
+    var revealed = false;
+    tv.ontimeupdate = function(){
+      if(seq !== mySeq) return;
+      if(!revealed && tv.currentTime > 0.2){ revealed = true; tv.classList.add("show"); }
+    };
+    var guard = setTimeout(function(){ endTransit(n, mySeq); }, 10000);  /* clip length + margin */
+    tv.onended = function(){ clearTimeout(guard); endTransit(n, mySeq); };
+    tv.onerror = function(){ clearTimeout(guard); endTransit(n, mySeq); };
+    var p = tv.play();
+    if(p && p.catch){ p.catch(function(){ if(seq !== mySeq) return; clearTimeout(guard); endTransit(n, mySeq); }); }
+    tv.addEventListener("pointerdown", function skip(){
+      tv.removeEventListener("pointerdown", skip);
+      if(seq !== mySeq) return;
+      clearTimeout(guard); endTransit(n, mySeq);
+    });
+  }
+
+  var noteTimer;
+  function note(msg){
+    hud.textContent = msg;
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(paint, 3500);
+  }
+
+  document.addEventListener("keydown", function(e){
+    if(e.key==="t"||e.key==="T"){
+      clipsOn = !clipsOn;
+      try { localStorage.setItem("tpClips", clipsOn ? "on" : "off"); } catch(err){}
+      note(clipsOn ? "clips ON (remembered)" : "clips OFF (remembered)");
+      return;
+    }
+    if(inTransit){ e.preventDefault(); tv.onended && tv.onended(); return; }
+    if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") go(current+1);
+    if(e.key==="ArrowLeft"||e.key==="PageUp") go(current-1);
+    if(e.key==="Home") go(0);
+    if(e.key==="End") go(slides.length-1);
+  });
+  document.addEventListener("pointerdown", function(e){
+    if(inTransit) return;
+    go(current + (e.clientX > innerWidth/2 ? 1 : -1));
+  });
+
+  if(sysReduced && !clipsOn){ setTimeout(function(){ note("system reduced motion detected: clips are off. Press T to enable (remembered)."); }, 400); }
+
+  window.__proto_state = function(){ return {current:current, inTransit:inTransit, clipsOn:clipsOn, sysReduced:sysReduced,
+    videoTime:tv.currentTime, videoEnded:tv.ended, videoShown:tv.classList.contains("show")}; };
+  window.__proto_go = go;   /* absolute slide index */
+  paint();
+})();
+</script>
+</body>
+</html>

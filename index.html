@@ -124,6 +124,9 @@
     while(tv.firstChild) tv.removeChild(tv.firstChild);
     var s1=document.createElement("source"); s1.src=clip.replace(/\.mp4$/,".webm"); s1.type="video/webm";
     var s2=document.createElement("source"); s2.src=clip; s2.type="video/mp4";
+    /* <source>-mode failures fire 'error' on the LAST source, never on the
+       <video> element - without this a broken clip is a 10s frozen hang. */
+    s2.onerror = function(){ if(seq !== mySeq) return; clearTimeout(guard); endTransit(n, mySeq); };
     tv.appendChild(s1); tv.appendChild(s2);
     tv.load();
     /* EARLY REVEAL: the clip's first frame is the current slide's
@@ -144,11 +147,7 @@
     tv.onerror = function(){ clearTimeout(guard); endTransit(n, mySeq); };
     var p = tv.play();
     if(p && p.catch){ p.catch(function(){ if(seq !== mySeq) return; clearTimeout(guard); endTransit(n, mySeq); }); }
-    tv.addEventListener("pointerdown", function skip(){
-      tv.removeEventListener("pointerdown", skip);
-      if(seq !== mySeq) return;
-      clearTimeout(guard); endTransit(n, mySeq);
-    });
+
   }
 
   var noteTimer;
@@ -172,11 +171,13 @@
     if(e.key==="End") go(slides.length-1);
   });
   document.addEventListener("pointerdown", function(e){
-    if(inTransit) return;
+    /* #tv has pointer-events:none, so clicks land here: skip via the same
+       path keys use, or the documented click-to-skip is dead code. */
+    if(inTransit){ if(tv.onended) tv.onended(); return; }
     go(current + (e.clientX > innerWidth/2 ? 1 : -1));
   });
 
-  try { console.log("motion build v8"); } catch(e){}
+  try { console.log("motion build v9"); } catch(e){}
 
   window.__proto_state = function(){ return {current:current, inTransit:inTransit, clipsOn:clipsOn, sysReduced:sysReduced,
     videoTime:tv.currentTime, videoEnded:tv.ended, videoShown:tv.classList.contains("show")}; };

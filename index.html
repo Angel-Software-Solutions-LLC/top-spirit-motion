@@ -818,7 +818,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     if(n<0 || n>=slides.length || n===current) return;
     var clip = CLIPS[current+"-"+n], forward = n>current;
     if(!forward || !clip){ commit(n); return; }
-    if(!clipsOn){ commit(n); note("clip skipped: motion is off. Press T for motion."); return; }
+    /* Silent. The driver only reaches this state by pressing T deliberately
+       and already got confirmation then, so announcing it again on every
+       later advance tells him nothing and flashes presenter instructions at
+       the client, in the one situation where something has already visibly
+       gone wrong. */
+    if(!clipsOn){ commit(n); return; }
 
     inTransit=true;
     var mySeq = ++seq;

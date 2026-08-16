@@ -180,6 +180,36 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   .rv,.bar,.draw,.pop,.cfade{transition-duration:.01ms !important}
   .slide{transition-duration:.01ms}
 }
+
+/* ---------- print: the handout ----------
+   Slides are absolutely stacked at opacity 0, so printing produced slide 1
+   alone. This is the artifact the reader checks the citations in at his own
+   pace, after the call, which is the whole point of printing citations. Each
+   slide becomes one landscape page with every animated element resolved to
+   its finished state. */
+@media print{
+  @page{size:A4 landscape;margin:0}
+  html,body{overflow:visible;height:auto;background:#fff}
+  #fit{position:static;overflow:visible}
+  #stage{position:static;transform:none;width:1920px;height:auto;background:none}
+  #tv,#rail,.hud,.hint{display:none !important}
+  .slide{position:relative;inset:auto;opacity:1 !important;pointer-events:auto;
+    width:1920px;height:1080px;overflow:hidden;
+    transform:scale(0.1536);transform-origin:top left;   /* 1920px into 295mm */
+    margin:0 0 -914px 0;                                  /* 1080 * (1 - 0.1536) */
+    break-after:page;page-break-after:always}
+  .slide:last-of-type{break-after:auto;page-break-after:auto}
+  /* every reveal and chart animation resolved to its end state */
+  .rv{opacity:1 !important;transform:none !important}
+  .bar{transform:scaleX(1) !important}
+  .draw{stroke-dashoffset:0 !important}
+  .pop{opacity:1 !important;transform:scale(1) !important}
+  .cfade{opacity:1 !important}
+  .rv,.bar,.draw,.pop,.cfade{transition:none !important}
+  /* citations are the reason this handout exists, so lift them off the floor */
+  .cite{font-size:15px !important;color:#26333a !important}
+  .cite b{color:#0b1518 !important}
+}
 </style>
 </head>
 <body>
@@ -300,8 +330,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
           <text class="lbl" x="0"   y="100" font-size="12.5" fill="#7e99a6">EUR 1,000</text>
           <text class="lbl" x="108" y="72"  font-size="12.5" fill="#a3bcc7">EUR 1,200 &middot; held for 13 years</text>
           <!-- value sits over its own step, right-aligned so it cannot cross the rise -->
+          <!-- both labels sit to the RIGHT of the rise at x=1325. Anchoring the
+               second one at the far edge made it run leftward straight across the
+               vertical it was annotating. -->
           <text class="big" x="1420" y="20" font-size="24" fill="#35ead2" text-anchor="end">EUR 1,560</text>
-          <text class="lbl" x="1420" y="44" font-size="12.5" fill="#35ead2" text-anchor="end">+30% from 1 Jan 2027</text>
+          <text class="lbl" x="1420" y="52" font-size="13" fill="#35ead2" text-anchor="end">+30%</text>
         </g>
 
         <!-- ================= ROW B: maintenance, linear 2025 to 2031 ================= -->
@@ -748,7 +781,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
     fill.style.width = (((current+1)/slides.length)*100).toFixed(2) + "%";
-    hud.textContent = (current+1)+" / "+slides.length+(clipsOn?"":"  [motion off - press T]");
+    /* The hint has to be visible while motion is ON, because the presenter who
+       has never heard of T is the whole audience for it. Showing it only when
+       motion is already off told you how to turn it back on. */
+    hud.textContent = (current+1)+" / "+slides.length+
+      (clipsOn ? "   T = instant transitions" : "   motion off - T restores");
   }
   function commit(n){ current=n; paint(); tv.classList.remove("show"); }
 

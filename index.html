@@ -1,187 +1,813 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Angel Software Solutions - Executive Partner Briefing (Motion)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Angel Software Solutions - Executive Partner Briefing</title>
+<meta name="description" content="One group AI strategy, one controlled proof in an operating company. Prepared for Marussia Beverages, 17 August 2026. Every external figure carries a source, a retrieval date and an evidence grade.">
 <style>
-  html,body{margin:0;height:100%;background:#06090c;overflow:hidden}
-  .slide{position:absolute;inset:0;opacity:0;transition:opacity .22s ease;pointer-events:none}
-  .slide.active{opacity:1}
-  .slide img{width:100%;height:100%;object-fit:contain;display:block}
-  /* video overlay uses the SAME fit mode as the stills so crops match exactly */
-  #tv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-      opacity:0;transition:opacity .4s ease;pointer-events:none;background:#06090c}
-  #tv.show{opacity:1}
-  .hud{position:fixed;left:18px;bottom:14px;color:#9fb2bf;font:12px/1.4 Consolas,monospace;
-       z-index:5;text-shadow:0 1px 3px #000}
+@font-face{font-family:"Manrope";src:url("fonts/manrope-variable.ttf") format("truetype");
+  font-weight:200 800;font-display:swap}
+
+:root{
+  --navy-950:#02060e; --navy-900:#030812; --navy-850:#050c18; --navy-800:#081321;
+  --ink:#eef7f9; --muted:#a3bcc7; --dim:#7e99a6;
+  --aqua:#35ead2; --aqua-soft:#8af5e9; --blue:#35a9f1; --gold:#c9b98a;
+  --line:rgba(138,245,233,.2);
+  --font:"Manrope",ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,"Liberation Mono",monospace;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --chart-ease:cubic-bezier(0.645,0.045,0.355,1); /* echarts cubicInOut */
+  --reveal-ease:cubic-bezier(.2,.6,.2,1);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--navy-950);overflow:hidden;
+  font-family:var(--font);color:var(--ink);-webkit-font-smoothing:antialiased}
+
+/* ---------- fixed 1920x1080 stage, scaled to fit ----------
+   Keeping a real 1920x1080 coordinate space means every position matches
+   the captured backgrounds and the generated clips exactly, so the text
+   layer and the motion layer never disagree about where anything sits. */
+#fit{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
+#stage{position:relative;width:1920px;height:1080px;transform-origin:50% 50%;
+  transform:scale(var(--k,1));background:var(--navy-950)}
+
+.slide{position:absolute;inset:0;opacity:0;pointer-events:none;
+  transition:opacity .22s ease}
+.slide.active{opacity:1;pointer-events:auto}
+.slide .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+/* the wash is what makes long-form text legible over photography */
+.slide .wash{position:absolute;inset:0;
+  background:linear-gradient(100deg,var(--navy-950) 0%,rgba(2,6,14,.94) 34%,rgba(3,8,18,.72) 52%,rgba(3,8,18,.30) 78%,rgba(3,8,18,.12) 100%)}
+.slide.wide .wash{background:linear-gradient(180deg,rgba(2,6,14,.93) 0%,rgba(2,6,14,.86) 55%,rgba(2,6,14,.95) 100%)}
+
+/* ---------- persistent chrome ---------- */
+.brand{position:absolute;left:104px;top:56px;display:flex;gap:16px;align-items:center;z-index:3}
+.brand svg{width:44px;height:auto;opacity:.92}
+.brand b{display:block;font:600 15px/1.2 var(--font);letter-spacing:.14em;text-transform:uppercase}
+.brand span{display:block;font:400 11px/1.4 var(--mono);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--dim);margin-top:3px}
+.hint{position:absolute;right:104px;top:60px;z-index:3;font:400 11px/1 var(--mono);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--dim);opacity:.75}
+
+/* ---------- body grid ---------- */
+.body{position:absolute;left:104px;right:104px;top:180px;bottom:238px;z-index:2;
+  display:flex;flex-direction:column;min-height:0}
+.eyebrow{font:500 13px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;
+  color:var(--aqua);margin-bottom:22px;flex:0 0 auto}
+h1{font:700 82px/1.04 var(--font);letter-spacing:-.022em;margin:0;max-width:18ch;
+  text-wrap:balance;flex:0 0 auto}
+h1.sm{font-size:66px;max-width:22ch}
+h1.xs{font-size:54px;max-width:27ch}
+.lede{font:400 23px/1.45 var(--font);color:var(--muted);margin:22px 0 0;max-width:46ch;
+  flex:0 0 auto}
+
+.cols{display:grid;gap:40px;margin-top:auto;padding-top:32px;flex:0 0 auto}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr));max-width:1400px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1160px}
+.c4{grid-template-columns:repeat(4,minmax(0,1fr));max-width:1600px;gap:32px}
+.col{border-top:1px solid var(--line);padding-top:16px}
+.col .k{font:500 12px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--aqua);margin-bottom:10px}
+.col .n{font:600 13px/1 var(--mono);color:var(--gold);letter-spacing:.16em;margin-bottom:10px}
+.col p{font:400 17.5px/1.5 var(--font);color:var(--muted);margin:0}
+.col p strong{color:var(--ink);font-weight:600}
+
+.people{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:44px;
+  margin-top:auto;padding-top:38px;max-width:1440px}
+.person{border-top:1px solid var(--line);padding-top:20px;display:flex;gap:18px}
+.mono-badge{flex:0 0 auto;width:46px;height:46px;border:1px solid var(--line);
+  border-radius:50%;display:grid;place-items:center;font:600 14px/1 var(--mono);
+  letter-spacing:.06em;color:var(--aqua)}
+.person h3{font:600 22px/1.2 var(--font);margin:0 0 4px}
+.person .role{font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:10px}
+.person p{font:400 17px/1.5 var(--font);color:var(--muted);margin:0}
+
+/* ---------- footer: caption, citation, number ---------- */
+/* The footer occupies a guaranteed band so a long citation can never
+   climb into the body copy. .body's bottom is set to clear this. */
+.foot{position:absolute;left:104px;right:104px;bottom:48px;height:148px;z-index:3;
+  display:flex;flex-direction:column;justify-content:flex-start}
+.caption{display:flex;align-items:center;gap:16px;font:500 12px/1 var(--mono);
+  letter-spacing:.2em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+.caption i{display:block;width:34px;height:1px;background:var(--aqua);flex:0 0 auto}
+.cite{margin-top:13px;padding-top:11px;border-top:1px solid rgba(138,245,233,.10);
+  font:400 12px/1.5 var(--mono);color:var(--dim);max-width:1620px;letter-spacing:.01em}
+.cite b{color:var(--muted);font-weight:500}
+.grade{display:inline-block;min-width:17px;padding:1px 5px;margin:0 3px;border-radius:3px;
+  font:600 10.5px/1.5 var(--mono);text-align:center;vertical-align:1px;
+  border:1px solid currentColor}
+.g-a{color:var(--aqua)} .g-b{color:var(--blue)} .g-c{color:var(--gold)}
+.g-d{color:#c98a8a} .g-e{color:var(--dim)}
+.num{position:absolute;right:0;bottom:0;font:500 13px/1 var(--mono);color:var(--dim);
+  letter-spacing:.1em}
+
+/* ---------- reveal, matching the 700ms feel ---------- */
+.rv{opacity:0;transform:translateY(18px);
+  transition:opacity .7s var(--reveal-ease),transform .7s var(--reveal-ease)}
+.slide.active .rv{opacity:1;transform:none}
+.slide.active .rv:nth-child(2){transition-delay:.06s}
+.slide.active .rv:nth-child(3){transition-delay:.12s}
+.slide.active .rv:nth-child(4){transition-delay:.18s}
+.slide.active .cols .col:nth-child(1),
+.slide.active .people .person:nth-child(1){transition-delay:.20s}
+.slide.active .cols .col:nth-child(2),
+.slide.active .people .person:nth-child(2){transition-delay:.28s}
+.slide.active .cols .col:nth-child(3),
+.slide.active .people .person:nth-child(3){transition-delay:.36s}
+.slide.active .cols .col:nth-child(4){transition-delay:.44s}
+.slide.active .foot{transition-delay:.42s}
+
+/* ---------- charts ---------- */
+.chartwrap{margin-top:34px}
+.chart-title{font:500 12px/1.3 var(--mono);letter-spacing:.2em;text-transform:uppercase;
+  color:var(--dim);margin-bottom:18px}
+svg.chart{display:block;overflow:visible}
+svg.chart text{font-family:var(--mono);fill:var(--muted)}
+svg.chart .lbl{font-size:14px;letter-spacing:.06em}
+svg.chart .big{font-family:var(--font);font-weight:700;fill:var(--ink)}
+svg.chart .axis{stroke:rgba(138,245,233,.16);stroke-width:1}
+svg.chart .tick{stroke:rgba(138,245,233,.10);stroke-width:1}
+
+/* bar grow */
+.bar{transform:scaleX(0);transform-origin:left center;
+  transition:transform 1s var(--chart-ease)}
+.slide.active .bar{transform:scaleX(1)}
+/* line draw */
+.draw{stroke-dasharray:var(--len,1000);stroke-dashoffset:var(--len,1000);
+  transition:stroke-dashoffset 1s var(--chart-ease)}
+.slide.active .draw{stroke-dashoffset:0}
+/* node pop */
+.pop{opacity:0;transform:scale(.6);transform-box:fill-box;transform-origin:center;
+  transition:opacity .5s var(--chart-ease),transform .5s var(--chart-ease)}
+.slide.active .pop{opacity:1;transform:scale(1)}
+.slide.active .d1{transition-delay:.30s} .slide.active .d2{transition-delay:.48s}
+.slide.active .d3{transition-delay:.66s} .slide.active .d4{transition-delay:.84s}
+.slide.active .d5{transition-delay:1.02s}
+/* fade for chart annotations */
+.cfade{opacity:0;transition:opacity .6s var(--chart-ease)}
+.slide.active .cfade{opacity:1}
+
+/* ---------- motion overlay ---------- */
+#tv{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;
+  transition:opacity .4s ease;pointer-events:none;background:var(--navy-950);z-index:6}
+#tv.show{opacity:1}
+
+/* ---------- progress + hud ---------- */
+#rail{position:absolute;left:104px;right:104px;bottom:26px;height:2px;
+  background:rgba(138,245,233,.12);z-index:4}
+#rail i{display:block;height:100%;background:var(--aqua);width:0;
+  transition:width .45s var(--ease)}
+.hud{position:fixed;left:16px;bottom:10px;color:var(--dim);
+  font:11px/1.4 var(--mono);z-index:9;text-shadow:0 1px 3px #000;opacity:.8}
+
+a{color:var(--aqua-soft);text-decoration:none;border-bottom:1px solid rgba(138,245,233,.35)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
+
+@media (prefers-reduced-motion:reduce){
+  .rv,.bar,.draw,.pop,.cfade{transition-duration:.01ms !important}
+  .slide{transition-duration:.01ms}
+}
 </style>
 </head>
 <body>
-<section class="slide active" id="s1" aria-label="Slide 1: One group AI strategy">
-  <img src="pslide1.png" alt="">
+
+<div id="fit"><div id="stage">
+
+<!-- ============ 01 ============ -->
+<section class="slide active" id="s1" aria-label="Slide 1 of 11">
+  <img class="bg" src="media/slide-bg-01.webp" alt="" fetchpriority="high">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="hint">Scroll &middot; Swipe &middot; Arrow keys</div>
+  <div class="body">
+    <div class="eyebrow rv">Executive discussion &middot; <time datetime="2026-08-17">17 August 2026</time></div>
+    <h1 class="rv">One group AI strategy.<br>One controlled proof in an operating company.</h1>
+    <p class="lede rv">Prepared for Marussia Beverages. Every external figure in this
+      briefing carries its source, its retrieval date and an evidence grade, so any
+      claim here can be checked before you act on it.</p>
+    <div class="cols c3 rv">
+      <div class="col"><div class="k">Existing estate first</div>
+        <p>We work with the systems and licences you already own. No new platform, no resale, nothing further to maintain.</p></div>
+      <div class="col"><div class="k">Governance from day one</div>
+        <p>An owner, a boundary, a metric and a stop rule before any use case starts.</p></div>
+      <div class="col"><div class="k">Value before scale</div>
+        <p>One bounded proof against a measured baseline, then a decision. Not a programme.</p></div>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Prepared for Marussia Beverages</div>
+    <div class="cite"><b>Sources on this slide:</b> none. This page states our position and
+      our offer only. Evidence grades used throughout:
+      <span class="grade g-a">A</span>statute or audited filing &middot;
+      <span class="grade g-b">B</span>company or association reported &middot;
+      <span class="grade g-c">C</span>trade press citing named people &middot;
+      <span class="grade g-d">D</span>vendor published &middot;
+      <span class="grade g-e">E</span>our own offer or inference.</div>
+    <div class="num">01</div>
+  </div>
 </section>
-<section class="slide" id="s2" aria-label="Slide 2: The immediate risk">
-  <img src="pslide2.png" alt="">
+
+<!-- ============ 02 ============ -->
+<section class="slide" id="s2" aria-label="Slide 2 of 11">
+  <img class="bg" src="media/slide-bg-02.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The executive risk</div>
+    <h1 class="sm rv">The immediate risk is fragmented AI activity without ownership,
+      controls or evidence.</h1>
+    <div class="chartwrap rv">
+      <div class="chart-title">Where unmanaged adoption starts</div>
+      <svg class="chart" width="820" height="118" viewBox="0 0 820 118" role="img"
+           aria-label="78 per cent of AI users bring their own AI tools to work, rising to 80 per cent at small and medium companies.">
+        <rect x="0" y="30" width="620" height="26" rx="3" fill="rgba(138,245,233,.09)"/>
+        <rect class="bar" x="0" y="30" width="484" height="26" rx="3" fill="#35ead2" opacity=".85"/>
+        <text class="big" x="640" y="52" font-size="42">78%</text>
+        <text class="lbl cfade" x="0" y="78" font-size="14">of AI users bring their own AI tools to work</text>
+        <text class="lbl cfade" x="0" y="100" font-size="13" fill="#7e99a6">80% at small and medium sized companies</text>
+      </svg>
+    </div>
+    <div class="cols c3 rv">
+      <div class="col"><div class="k">Fragmented experiments</div>
+        <p>Local activity without a common owner, control boundary or route to scale.</p></div>
+      <div class="col"><div class="k">Unmeasured value</div>
+        <p>Disconnected data makes the baseline, the business case and realised return hard to prove.</p></div>
+      <div class="col"><div class="k">Tool sprawl</div>
+        <p>New licences and integrations can arrive before value is proven and security and ownership are agreed.</p></div>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Value requires control</div>
+    <div class="cite"><b>Source:</b> Microsoft and LinkedIn, <cite>Work Trend Index Annual
+      Report 2024</cite>, 8 May 2024. <span class="grade g-b">B</span>
+      Denominator is <b>AI users</b>, not all employees. Retrieved <time datetime="2026-08-16">16 August 2026</time>.
+      We have not measured this inside your business and do not imply that we have.</div>
+    <div class="num">02</div>
+  </div>
 </section>
-<section class="slide" id="s3" aria-label="Slide 3: The brief as we understand it">
-  <img src="pslide3.png" alt="">
+
+<!-- ============ 03 ============ -->
+<section class="slide wide" id="s3" aria-label="Slide 3 of 11">
+  <img class="bg" src="media/slide-bg-03.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The planning window</div>
+    <h1 class="xs rv">Two dated decisions are already in your 2027 calendar.
+      Neither of them is an AI decision.</h1>
+    <div class="chartwrap rv" style="margin-top:26px">
+      <!-- Both rows use a TRUE LINEAR time axis. Row A spans 2013 to 2028 at
+           94.67px per year; row B spans 2025 to 2031 at 236.7px per year.
+           Every marked date sits at its proportional position, so the long
+           flat stretch before 2027 is the real shape of the series and not
+           a drawing convenience. -->
+      <svg class="chart" width="1500" height="352" viewBox="0 0 1500 352" role="img"
+           aria-label="Austrian spirits excise held at 1,200 euro per hectolitre of pure alcohol from March 2014 and rises 30 per cent to 1,560 euro on 1 January 2027. Separately, mainstream maintenance for core ERP enhancement packs 0 to 5 ended 31 December 2025, and for packs 6 to 8 it ends 31 December 2027, with optional extended maintenance at a premium to the end of 2030.">
+        <!-- ================= ROW A: excise, linear 2013 to 2028 ================= -->
+        <text class="lbl" x="0" y="12" font-size="11.5" fill="#7e99a6"
+              letter-spacing="2.6">AUSTRIAN SPIRITS EXCISE &middot; EUR PER HECTOLITRE PURE ALCOHOL</text>
+        <line class="axis" x1="0" y1="140" x2="1420" y2="140"/>
+        <g class="cfade" style="transition-delay:.3s">
+          <line class="tick" x1="0"    y1="134" x2="0"    y2="146"/>
+          <line class="tick" x1="663"  y1="134" x2="663"  y2="146"/>
+          <line class="tick" x1="1325" y1="134" x2="1325" y2="146"/>
+          <text class="lbl" x="0"    y="162" font-size="11.5">2013</text>
+          <text class="lbl" x="641"  y="162" font-size="11.5">2020</text>
+          <text class="lbl" x="1290" y="162" font-size="11.5" fill="#35ead2">2027</text>
+        </g>
+        <!-- 1,000 to Feb 2014 (x=95), 1,200 to Dec 2026 (x=1325), 1,560 after -->
+        <path class="draw" style="--len:1600"
+              d="M0 108 L95 108 L95 80 L1325 80 L1325 30 L1420 30"
+              fill="none" stroke="#35ead2" stroke-width="2.5"
+              stroke-linejoin="round" stroke-linecap="round"/>
+        <g class="cfade" style="transition-delay:.8s">
+          <text class="lbl" x="0"   y="100" font-size="12.5" fill="#7e99a6">EUR 1,000</text>
+          <text class="lbl" x="108" y="72"  font-size="12.5" fill="#a3bcc7">EUR 1,200 &middot; held for 13 years</text>
+          <!-- value sits over its own step, right-aligned so it cannot cross the rise -->
+          <text class="big" x="1420" y="20" font-size="24" fill="#35ead2" text-anchor="end">EUR 1,560</text>
+          <text class="lbl" x="1420" y="44" font-size="12.5" fill="#35ead2" text-anchor="end">+30% from 1 Jan 2027</text>
+        </g>
+
+        <!-- ================= ROW B: maintenance, linear 2025 to 2031 ================= -->
+        <text class="lbl" x="0" y="216" font-size="11.5" fill="#7e99a6"
+              letter-spacing="2.6">CORE ERP MAINTENANCE HORIZON</text>
+        <line class="axis" x1="0" y1="318" x2="1420" y2="318"/>
+        <g class="cfade" style="transition-delay:.3s">
+          <line class="tick" x1="0"    y1="312" x2="0"    y2="324"/>
+          <line class="tick" x1="237"  y1="312" x2="237"  y2="324"/>
+          <line class="tick" x1="473"  y1="312" x2="473"  y2="324"/>
+          <line class="tick" x1="710"  y1="312" x2="710"  y2="324"/>
+          <line class="tick" x1="947"  y1="312" x2="947"  y2="324"/>
+          <line class="tick" x1="1183" y1="312" x2="1183" y2="324"/>
+          <line class="tick" x1="1420" y1="312" x2="1420" y2="324"/>
+          <text class="lbl" x="0"    y="340" font-size="11.5">2025</text>
+          <text class="lbl" x="213"  y="340" font-size="11.5">2026</text>
+          <text class="lbl" x="450"  y="340" font-size="11.5">2027</text>
+          <text class="lbl" x="687"  y="340" font-size="11.5">2028</text>
+          <text class="lbl" x="924"  y="340" font-size="11.5">2029</text>
+          <text class="lbl" x="1160" y="340" font-size="11.5">2030</text>
+          <text class="lbl" x="1397" y="340" font-size="11.5">2031</text>
+        </g>
+        <!-- packs 0-5: ended 31 Dec 2025 => x 0 to 237 -->
+        <rect class="bar d1" x="0" y="238" width="237" height="18" rx="3" fill="#c98a8a" opacity=".6"/>
+        <!-- packs 6-8: to 31 Dec 2027 => x 0 to 710 -->
+        <rect class="bar d2" x="0" y="266" width="710" height="18" rx="3" fill="#c9b98a" opacity=".75"/>
+        <!-- extended, at a premium, to 31 Dec 2030 => x 710 to 1420 -->
+        <rect class="bar d3" x="710" y="266" width="710" height="18" rx="3" fill="rgba(201,185,138,.20)"
+              stroke="rgba(201,185,138,.35)" stroke-dasharray="3 4"/>
+        <g class="cfade" style="transition-delay:.95s">
+          <text class="lbl" x="405" y="252" font-size="12.5" fill="#c98a8a">Packs 0 to 5: mainstream maintenance ended 31 Dec 2025</text>
+          <text class="lbl" x="726" y="280" font-size="12" fill="#7e99a6">extended, at a premium, to end 2030</text>
+          <text class="lbl" x="12"  y="280" font-size="12.5" fill="#02060e" font-weight="600">Packs 6 to 8: ends 31 Dec 2027</text>
+        </g>
+        <!-- today = 16 Aug 2026 => 237 + (228/365)*237 = 385 -->
+        <g class="cfade" style="transition-delay:1.15s">
+          <line x1="385" y1="206" x2="385" y2="328" stroke="#35ead2" stroke-width="1.4" stroke-dasharray="4 5"/>
+          <text class="lbl" x="393" y="208" font-size="11.5" fill="#35ead2">today</text>
+        </g>
+      </svg>
+    </div>
+    <p class="lede rv" style="max-width:92ch;margin-top:22px;font-size:20px">The first
+      question we would ask is not about AI. It is which enhancement pack your core ERP
+      runs, because the answer decides whether this is a 2027 conversation or an
+      already-overdue one.</p>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Group direction &middot; Local proof point</div>
+    <div class="cite"><b>Sources:</b> Budgetbegleitgesetz 2027 to 2028,
+      <cite>BGBl. I Nr. 62/2026</cite>, enacted 29 July 2026, Artikel 29, amending AlkStG 2022
+      <span class="grade g-a">A</span> &middot;
+      SAP maintenance strategy for SAP Business Suite 7, SAP Notes 1648480 and 52505
+      <span class="grade g-a">A</span>. Retrieved <time datetime="2026-08-16">16 August 2026</time>.
+      <b>Not stated:</b> which enhancement pack you run. We do not know, and this slide
+      does not assume it.</div>
+    <div class="num">03</div>
+  </div>
 </section>
-<section class="slide" id="s4" aria-label="Slide 4: Named accountability">
-  <img src="pslide4.png" alt="">
+
+<!-- ============ 04 ============ -->
+<section class="slide" id="s4" aria-label="Slide 4 of 11">
+  <img class="bg" src="media/slide-bg-04.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The brief as we understand it, to confirm</div>
+    <h1 class="sm rv">Build one group capability. Prove it first in one operating company.</h1>
+    <p class="lede rv">This is our reading of what we have been told, not a record of
+      anything you have approved. Please correct it in the meeting.</p>
+    <div class="cols c3 rv">
+      <div class="col"><div class="k">Group capability</div>
+        <p>One practical rulebook and a shared operating model across the group.</p></div>
+      <div class="col"><div class="k">Operational proof</div>
+        <p>Rank real use cases against a measurable baseline before recommending a pilot.</p></div>
+      <div class="col"><div class="k">Literacy and estate</div>
+        <p>Inventory approved and unsanctioned tools, data exposure and training needs. Use existing licensed systems first.</p></div>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Our reading, offered for correction</div>
+    <div class="cite"><b>Source:</b> our own conversations with your team, June to
+      August 2026 <span class="grade g-e">E</span>. Not audited, not approved by you,
+      and stated here so it can be corrected rather than assumed.</div>
+    <div class="num">04</div>
+  </div>
 </section>
-<section class="slide" id="s5" aria-label="Slide 5: The governance minimum">
-  <img src="pslide5.png" alt="">
+
+<!-- ============ 05 ============ -->
+<section class="slide" id="s5" aria-label="Slide 5 of 11">
+  <img class="bg" src="media/slide-bg-05.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The continuity case</div>
+    <h1 class="sm rv">The first business case is continuity, and it is a management risk
+      before it is an AI opportunity.</h1>
+    <div class="cols c2 rv">
+      <div class="col"><div class="k">What we have been told</div>
+        <p>A core ERP more than twenty years old and a reporting layer over a decade old,
+          neither fully documented, with the working knowledge of both held by very few
+          people. A migration of reporting into Power BI is already under way.</p></div>
+      <div class="col"><div class="k">Why it comes first</div>
+        <p>Undocumented process knowledge is the dependency under every other decision
+          here, including the core-system decision. It is also the one that gets harder
+          on a fixed timetable rather than a chosen one.</p></div>
+    </div>
+    <p class="lede rv" style="margin-top:30px;max-width:96ch;font-size:22px">Capturing
+      what those systems actually do is useful whichever core system you choose, and it
+      is useful even if you never buy anything else from us.</p>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Continuity before automation</div>
+    <div class="cite"><b>Source:</b> stated to us by your team, August 2026
+      <span class="grade g-e">E</span>. Unaudited and described at business level only.
+      <b>Deliberately omitted:</b> any individual's age, working pattern or leaving date.
+      Those are personal details and they are not ours to publish.</div>
+    <div class="num">05</div>
+  </div>
 </section>
-<section class="slide" id="s6"><img src="pslide6.png" alt=""></section>
-<section class="slide" id="s7"><img src="pslide7.png" alt=""></section>
-<section class="slide" id="s8"><img src="pslide8.png" alt=""></section>
-<section class="slide" id="s9"><img src="pslide9.png" alt=""></section>
-<section class="slide" id="s10"><img src="pslide10.png" alt=""></section>
-<section class="slide" id="s11"><img src="pslide11.png" alt=""></section>
+
+<!-- ============ 06 ============ -->
+<section class="slide" id="s6" aria-label="Slide 6 of 11">
+  <img class="bg" src="media/slide-bg-06.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The governance minimum</div>
+    <h1 class="sm rv">Every use case gets an owner, a boundary, a metric and a stop rule.</h1>
+    <div class="cols c4 rv">
+      <div class="col"><div class="n">01</div><div class="k">Business owner</div>
+        <p>Named outcome, baseline and success metric.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Data boundary</div>
+        <p>Approved sources, access, retention and least privilege.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">Human control</div>
+        <p>Approval point, exception route and escalation owner.</p></div>
+      <div class="col"><div class="n">04</div><div class="k">Evidence gate</div>
+        <p>Acceptance test, decision record and an explicit go or no-go.</p></div>
+    </div>
+    <p class="lede rv" style="margin-top:30px;max-width:110ch;font-size:21px">Discovery
+      produces the use-case register, the minimum control set, the responsibility matrix
+      and the decision log. Before any pilot, data and credential custody,
+      model-training restrictions, intellectual property, portability, deletion or
+      return, and exit support are agreed in writing.</p>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Rules before tools &middot; Evidence before scale</div>
+    <div class="cite"><b>Context:</b> Regulation (EU) 2024/1689, the AI Act. The
+      AI-literacy duty in Article 4 has applied since <time datetime="2025-02-02">2 February 2025</time>
+      and the transparency duties in Article 50 apply from <time datetime="2026-08-02">2 August 2026</time>,
+      both per Article 113 <span class="grade g-a">A</span>. Retrieved
+      <time datetime="2026-08-16">16 August 2026</time>. The control set above is our own
+      design <span class="grade g-e">E</span> and we make no claim that adopting it
+      constitutes compliance. That assessment is your counsel's, not ours.</div>
+    <div class="num">06</div>
+  </div>
+</section>
+
+<!-- ============ 07 ============ -->
+<section class="slide" id="s7" aria-label="Slide 7 of 11">
+  <img class="bg" src="media/slide-bg-07.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The operating model</div>
+    <h1 class="sm rv">Three parties. One written operating model.</h1>
+    <div class="cols c3 rv">
+      <div class="col"><div class="n">01</div><div class="k">Marussia and Top Spirit</div>
+        <p>Retain formal approval for priorities, data, architecture, security, risk
+          acceptance and <strong>every go or no-go decision</strong>.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Your existing IT partners</div>
+        <p>Advise on architecture and security, provision approved access, and run
+          production, change and incident management. We are not proposing to replace
+          anyone.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">Angel</div>
+        <p>Ranks use cases, designs controls, assembles evidence and hands over. We
+          recommend no vendor and resell no licences.</p></div>
+    </div>
+    <p class="lede rv" style="margin-top:30px;max-width:110ch;font-size:21px">We have
+      been told there is an established IT partner relationship and that it works. The
+      boundaries between group IT, local IT and any core-system contact are not ours to
+      assume, so this is a set of roles to confirm rather than a finished
+      responsibility matrix.</p>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Alongside what already works</div>
+    <div class="cite"><b>Source:</b> stated to us by your team, August 2026
+      <span class="grade g-e">E</span>. We have deliberately not named any incumbent
+      provider or drawn a three-party responsibility matrix, because the actual
+      boundaries have not been confirmed to us.</div>
+    <div class="num">07</div>
+  </div>
+</section>
+
+<!-- ============ 08 ============ -->
+<section class="slide" id="s8" aria-label="Slide 8 of 11">
+  <img class="bg" src="media/slide-bg-08.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The proposed technical boundary</div>
+    <h1 class="xs rv">Use the existing estate. Isolate the proof. Write nothing back.</h1>
+    <div class="chartwrap rv">
+      <svg class="chart" width="1500" height="200" viewBox="0 0 1500 200" role="img"
+           aria-label="Approved read-only extracts flow into a time-boxed client-approved workspace, which produces a baseline, ranked options and a go or no-go decision. Nothing is written back to production.">
+        <line class="draw" style="--len:1180" x1="150" y1="70" x2="1330" y2="70"
+              stroke="rgba(138,245,233,.30)" stroke-width="1.5"/>
+        <g class="pop d1">
+          <rect x="0" y="34" width="300" height="72" rx="6" fill="rgba(3,8,18,.72)" stroke="rgba(138,245,233,.28)"/>
+          <text class="lbl" x="24" y="64" font-size="13" fill="#35ead2">APPROVED EXTRACTS</text>
+          <text class="lbl" x="24" y="88" font-size="13.5">Read only &middot; least privilege</text>
+        </g>
+        <g class="pop d3">
+          <rect x="560" y="20" width="380" height="100" rx="6" fill="rgba(3,8,18,.82)" stroke="rgba(53,234,210,.45)"/>
+          <text class="lbl" x="584" y="52" font-size="13" fill="#35ead2">TIME-BOXED WORKSPACE</text>
+          <text class="lbl" x="584" y="76" font-size="13.5">Approved by you, logged,</text>
+          <text class="lbl" x="584" y="98" font-size="13.5">closed at handover</text>
+        </g>
+        <g class="pop d5">
+          <rect x="1200" y="34" width="300" height="72" rx="6" fill="rgba(3,8,18,.72)" stroke="rgba(138,245,233,.28)"/>
+          <text class="lbl" x="1224" y="64" font-size="13" fill="#c9b98a">DECISION</text>
+          <text class="lbl" x="1224" y="88" font-size="13.5">Baseline &middot; ranked &middot; go / no-go</text>
+        </g>
+        <g class="cfade" style="transition-delay:1.15s">
+          <text class="lbl" x="560" y="164" font-size="13" fill="#c98a8a">No write access to production. Nothing is changed in a live system.</text>
+        </g>
+      </svg>
+    </div>
+    <div class="cols c2 rv" style="margin-top:26px">
+      <div class="col"><div class="k">On existing licences</div>
+        <p>Capability you already own is the default. We resell nothing. Any new tool is
+          a separate decision you take, with a reason written down.</p></div>
+      <div class="col"><div class="k">On extraction and licensing</div>
+        <p>A scheduled read-only extract to a reporting layer is an indirect static read
+          under the published policy and is not itself a chargeable event. We would still
+          have your licensing position confirmed in writing before anything is built.</p></div>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Existing estate &middot; Isolated proof</div>
+    <div class="cite"><b>Source:</b> SAP indirect and digital access policy, April 2018,
+      which meters the creation of nine document types rather than reads
+      <span class="grade g-b">B</span>. Retrieved <time datetime="2026-08-16">16 August 2026</time>.
+      <b>We quote no figure for any licensing exposure.</b> Sizing that is your licence
+      holder's job and we would not put a number on it from the outside.</div>
+    <div class="num">08</div>
+  </div>
+</section>
+
+<!-- ============ 09 ============ -->
+<section class="slide" id="s9" aria-label="Slide 9 of 11">
+  <img class="bg" src="media/slide-bg-09.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The first engagement</div>
+    <h1 class="sm rv">Discovery ends with a decision, and stopping is one of the
+      designed outcomes.</h1>
+    <div class="chartwrap rv">
+      <svg class="chart" width="1500" height="188" viewBox="0 0 1500 188" role="img"
+           aria-label="Four stages: scope, baseline, rank, decide. Two stop gates, one after baseline and one before the decision. At either gate the work can stop and the client keeps everything produced.">
+        <line class="draw" style="--len:1360" x1="40" y1="62" x2="1400" y2="62"
+              stroke="rgba(138,245,233,.28)" stroke-width="1.5"/>
+        <g class="pop d1"><circle cx="40" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
+          <text class="lbl" x="40" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">01</text>
+          <text class="lbl" x="40" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Scope</text>
+          <text class="lbl" x="40" y="118" font-size="12" text-anchor="middle">sponsor, owner, access</text></g>
+        <g class="pop d2"><circle cx="493" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
+          <text class="lbl" x="493" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">02</text>
+          <text class="lbl" x="493" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Baseline</text>
+          <text class="lbl" x="493" y="118" font-size="12" text-anchor="middle">time, cost, error rates</text></g>
+        <g class="pop d3"><circle cx="946" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
+          <text class="lbl" x="946" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">03</text>
+          <text class="lbl" x="946" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Rank</text>
+          <text class="lbl" x="946" y="118" font-size="12" text-anchor="middle">value, feasibility, risk</text></g>
+        <g class="pop d4"><circle cx="1400" cy="62" r="13" fill="#02060e" stroke="#c9b98a" stroke-width="2.4"/>
+          <text class="lbl" x="1400" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">04</text>
+          <text class="lbl" x="1400" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Decide</text>
+          <text class="lbl" x="1400" y="118" font-size="12" text-anchor="middle">go, revise or stop</text></g>
+        <!-- stop gates -->
+        <g class="cfade" style="transition-delay:1.0s">
+          <line x1="700" y1="30" x2="700" y2="94" stroke="#c98a8a" stroke-width="1.4" stroke-dasharray="4 5"/>
+          <text class="lbl" x="712" y="34" font-size="12" fill="#c98a8a">stop gate</text>
+          <line x1="1180" y1="30" x2="1180" y2="94" stroke="#c98a8a" stroke-width="1.4" stroke-dasharray="4 5"/>
+          <text class="lbl" x="1192" y="34" font-size="12" fill="#c98a8a">stop gate</text>
+          <text class="lbl" x="40" y="164" font-size="13.5" fill="#a3bcc7">At either gate the work can stop at a cost agreed in advance, and you keep the baseline, the register, the control set and the decision log.</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>A decision, not an automatic pilot</div>
+    <div class="cite"><b>Source:</b> our own offer <span class="grade g-e">E</span>.
+      No external figure appears on this slide. <b>No price, no saving and no duration
+      is quoted anywhere in this briefing</b>, because we have not yet seen a single
+      extract and any number offered before that would be invented.</div>
+    <div class="num">09</div>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="slide" id="s10" aria-label="Slide 10 of 11">
+  <img class="bg" src="media/slide-bg-10.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">Named accountability</div>
+    <h1 class="sm rv">A named team accountable for outcomes, controls and delivery.</h1>
+    <div class="people rv">
+      <div class="person"><div class="mono-badge">AD</div><div>
+        <h3>Andrew Demczuk</h3><div class="role">Applied AI Lead &middot; Vienna</div>
+        <p>Owns outcome definition, the economics of each use case and governance design.
+          References and documentary evidence available during diligence.</p></div></div>
+      <div class="person"><div class="mono-badge">WH</div><div>
+        <h3>Will Humphreys</h3><div class="role">Systems Engineer</div>
+        <p>Owns architecture, integrations, traceability and the controls that stop
+          safely when a check fails.</p></div></div>
+      <div class="person"><div class="mono-badge">KS</div><div>
+        <h3>Keith Swoger</h3><div class="role">Solutions Architect</div>
+        <p>Owns scope boundaries, the security interface, handover and stop rules.</p></div></div>
+    </div>
+    <p class="lede rv" style="margin-top:28px;max-width:112ch;font-size:21px">Three
+      people, and no bench behind them. You would be an early client of this firm, and
+      we would rather you weighed that openly than discovered it later.</p>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Named people &middot; Named responsibilities</div>
+    <div class="cite"><b>Verifiable now:</b> a merged proxy-host guard fix in the
+      OpenCLAW project, commit <code>bffb83a</code>, and a contribution to the Nimbalyst
+      project, commit <code>7155256</code> <span class="grade g-a">A</span>, both
+      inspectable in public version control. <b>Not claimed:</b> named client references
+      for this firm. Roles, availability and a one-page responsibility matrix are
+      confirmed before appointment, not asserted here.</div>
+    <div class="num">10</div>
+  </div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="slide wide" id="s11" aria-label="Slide 11 of 11">
+  <img class="bg" src="media/slide-bg-11.webp" alt="">
+  <div class="wash"></div>
+  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+    <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
+  <div class="body">
+    <div class="eyebrow rv">The decision requested</div>
+    <h1 class="sm rv">Three things on Monday. None of them is money.</h1>
+    <div class="cols c3 rv">
+      <div class="col"><div class="n">01</div><div class="k">Confirm the objective</div>
+        <p>Confirm the group objective, and whether Top Spirit is the first proof point.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Name three people</div>
+        <p>An executive sponsor, a business owner and an IT and security counterpart.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">Authorise one workshop</div>
+        <p>One focused session to define the discovery proposal. No wider commitment.</p></div>
+    </div>
+    <div class="cols c2 rv" style="margin-top:34px;max-width:1500px">
+      <div class="col"><div class="k">How to check this briefing</div>
+        <p>Every external figure above carries a source, a retrieval date and a grade.
+          Two are statute and can be read directly. We have deliberately printed no
+          competitor case studies, because when we traced the widely quoted
+          beverage-industry AI figures, most of them did not survive being checked.
+          We would rather show you your own numbers than someone else's press release.</p></div>
+      <div class="col"><div class="k">What would make us stop</div>
+        <p>No lawful access to the data. No named owner. A baseline that cannot be
+          measured. Or a cost out of proportion to the decision it informs. Any one of
+          these ends the work at a price agreed before it starts, and you keep
+          everything produced up to that point.</p></div>
+    </div>
+  </div>
+  <div class="foot rv">
+    <div class="caption"><i></i>Agree the next step, not the programme</div>
+    <div class="cite"><b>Standing position:</b> we quote no fee before seeing one bounded
+      extract, promise no saving, take no share of any saving, resell no licences, and
+      recommend no core-system vendor <span class="grade g-e">E</span>. Prepared by Angel
+      Software Solutions LLC for discussion on <time datetime="2026-08-17">17 August 2026</time>.</div>
+    <div class="num">11</div>
+  </div>
+</section>
+
 <video id="tv" muted playsinline preload="auto" aria-hidden="true"></video>
+<div id="rail"><i id="railfill"></i></div>
+</div></div>
 <div class="hud" id="hud"></div>
+
 <script>
 (function(){
   "use strict";
+  var stage  = document.getElementById("stage");
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
-  var tv = document.getElementById("tv");
-  var hud = document.getElementById("hud");
+  var tv     = document.getElementById("tv");
+  var hud    = document.getElementById("hud");
+  var fill   = document.getElementById("railfill");
   var current = 0, inTransit = false;
 
+  /* ---- scale the fixed 1920x1080 stage into the viewport ---- */
+  function fitStage(){
+    var k = Math.min(innerWidth/1920, innerHeight/1080);
+    stage.style.setProperty("--k", k);
+  }
+  addEventListener("resize", fitStage, {passive:true});
+  addEventListener("orientationchange", fitStage);
+  fitStage();
+
   /* TEXT-LAYER SEPARATION: each clip carries ONLY the photography.
-     Frame 1 = slide N's background with the text hidden (so the fade-in
-     of the video reads as the text dissolving), and the final frames are
-     sealed onto slide N+1's exact text-free background. The fade back to
-     the real slide at the end is the text fading in, pixel-exact,
-     because the text IS the slide - it never passes through the model. */
+     Frame 1 is slide N's background with no text, so fading the video in
+     reads as the text dissolving; the final frames are sealed onto slide
+     N+1's exact background, so fading back out reads as the next slide's
+     text arriving. The text never passes through the model, which is why
+     it lands pixel-exact and why it can now be real HTML with live charts
+     and citations rather than a flattened image. */
   var CLIPS = {
-    "0-1": "PartnerDA1-2.mp4",
-    "1-2": "PartnerDA2-3.mp4",
-    "2-3": "PartnerDA3-4.mp4",
-    "3-4": "PartnerDA4-5.mp4",
-    "4-5": "PartnerDA5-6.mp4",
-    "5-6": "PartnerDA6-7.mp4",
-    "6-7": "PartnerDA7-8.mp4",
-    "7-8": "PartnerDA8-9.mp4",
-    "8-9": "PartnerDA9-10.mp4",
-    "9-10": "PartnerDA10-11.mp4"
+    "0-1":"PartnerDA1-2.mp4",  "1-2":"PartnerDA2-3.mp4",  "2-3":"PartnerDA3-4.mp4",
+    "3-4":"PartnerDA4-5.mp4",  "4-5":"PartnerDA5-6.mp4",  "5-6":"PartnerDA6-7.mp4",
+    "6-7":"PartnerDA7-8.mp4",  "7-8":"PartnerDA8-9.mp4",  "8-9":"PartnerDA9-10.mp4",
+    "9-10":"PartnerDA10-11.mp4"
   };
 
-  /* Reduced motion: clips OFF BY DEFAULT but visibly and reversibly.
-     The T choice persists in localStorage so a reload keeps it. */
-  /* Client share page: motion IS the content, so clips default ON for
-     every visitor (T still turns them off, remembered). */
-  var sysReduced = false;
-  var stored = null;
-  try { stored = localStorage.getItem("tpClips"); } catch(e){}
-  var clipsOn = stored ? (stored === "on") : true;
+  var stored=null; try{ stored=localStorage.getItem("tpClips"); }catch(e){}
+  var clipsOn = stored ? (stored==="on") : true;
 
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
-    hud.textContent = (current+1) + " / " + slides.length + (clipsOn ? "" : "  [motion off - press T]");
+    fill.style.width = (((current+1)/slides.length)*100).toFixed(2) + "%";
+    hud.textContent = (current+1)+" / "+slides.length+(clipsOn?"":"  [motion off - press T]");
   }
+  function commit(n){ current=n; paint(); tv.classList.remove("show"); }
 
-  function commit(n){ current = n; paint(); tv.classList.remove("show"); }
-
-  /* Every transition gets a generation number. Any callback minted by a
-     transition (timeupdate reveal, ended, error, play() rejection, the
-     guard timer, cleanup) carries its generation and no-ops if a skip
-     or a newer transition has moved the world on. Without this, a skip
-     before the reveal point leaves the video PLAYING and its timeupdate
-     re-shows the overlay over the committed slide - the stuck-frame
-     bug. */
+  /* Generation-numbered callbacks: any callback minted by a transition
+     carries its generation and no-ops once a skip or a newer transition
+     has moved the world on. Without this, skipping before the reveal
+     leaves the clip playing and its timeupdate re-shows the overlay over
+     an already-committed slide. */
   var seq = 0;
-
   function endTransit(n, mySeq){
-    if(mySeq !== undefined && mySeq !== seq) return;   /* stale caller */
+    if(mySeq!==undefined && mySeq!==seq) return;
     if(!inTransit) return;
-    inTransit = false;
-    seq++;                                   /* invalidate every callback */
-    try { tv.pause(); } catch(e){}
+    inTransit=false; seq++;
+    try{ tv.pause(); }catch(e){}
     tv.ontimeupdate = tv.onended = tv.onerror = null;
-    commit(n);                               /* also hides the overlay */
+    commit(n);
     setTimeout(function(){
       if(!inTransit){ while(tv.firstChild) tv.removeChild(tv.firstChild); try{ tv.load(); }catch(e){} }
-    }, 500);                                 /* after the fade-out */
+    },500);
   }
 
   function go(n){
-    if(inTransit){ return; }
-    if(n < 0 || n >= slides.length || n === current) return;
-    var key = current + "-" + n;
-    var clip = CLIPS[key];
-    var forward = n > current;
+    if(inTransit) return;
+    if(n<0 || n>=slides.length || n===current) return;
+    var clip = CLIPS[current+"-"+n], forward = n>current;
     if(!forward || !clip){ commit(n); return; }
-    if(!clipsOn){ commit(n); note("clip skipped: clips are off. Press T to play clips."); return; }
+    if(!clipsOn){ commit(n); note("clip skipped: motion is off. Press T for motion."); return; }
 
-    inTransit = true;
+    inTransit=true;
     var mySeq = ++seq;
-    /* PRECACHE the destination slide's bitmap so the fade-in lands on a
-       decoded image, never a decode stall. */
-    var destImg = slides[n].querySelector("img");
-    if(destImg && destImg.decode){ destImg.decode().catch(function(){}); }
+    var destBg = slides[n].querySelector(".bg");
+    if(destBg && destBg.decode) destBg.decode().catch(function(){});
     while(tv.firstChild) tv.removeChild(tv.firstChild);
     var s1=document.createElement("source"); s1.src=clip.replace(/\.mp4$/,".webm"); s1.type="video/webm";
     var s2=document.createElement("source"); s2.src=clip; s2.type="video/mp4";
-    /* <source>-mode failures fire 'error' on the LAST source, never on the
-       <video> element - without this a broken clip is a 10s frozen hang. */
-    s2.onerror = function(){ if(seq !== mySeq) return; clearTimeout(guard); endTransit(n, mySeq); };
-    tv.appendChild(s1); tv.appendChild(s2);
-    tv.load();
-    /* EARLY REVEAL: the clip's first frame is the current slide's
-       background WITHOUT text, so fading the video in promptly IS the
-       text-dissolve moment. A short delay just ensures playback started. */
-    var revealed = false;
-    tv.ontimeupdate = function(){
-      if(seq !== mySeq) return;
-      if(!revealed && tv.currentTime > 0.2){ revealed = true; tv.classList.add("show"); }
-      /* EARLY SETTLE-EXIT: the clip carries a still safety tail after the
-         seal; end AT the settle point instead of waiting for 'ended'. */
-      if(tv.duration && tv.currentTime >= tv.duration - 1.2){
-        clearTimeout(guard); endTransit(n, mySeq);
-      }
-    };
-    var guard = setTimeout(function(){ endTransit(n, mySeq); }, 10000);  /* clip length + margin */
-    tv.onended = function(){ clearTimeout(guard); endTransit(n, mySeq); };
-    tv.onerror = function(){ clearTimeout(guard); endTransit(n, mySeq); };
-    var p = tv.play();
-    if(p && p.catch){ p.catch(function(){ if(seq !== mySeq) return; clearTimeout(guard); endTransit(n, mySeq); }); }
+    /* <source>-mode failures fire on the LAST source, never on <video>. */
+    s2.onerror=function(){ if(seq!==mySeq) return; clearTimeout(guard); endTransit(n,mySeq); };
+    tv.appendChild(s1); tv.appendChild(s2); tv.load();
 
+    var revealed=false;
+    tv.ontimeupdate=function(){
+      if(seq!==mySeq) return;
+      if(!revealed && tv.currentTime>0.2){ revealed=true; tv.classList.add("show"); }
+      /* end AT the settle point; the clip carries a still safety tail */
+      if(tv.duration && tv.currentTime >= tv.duration-1.2){ clearTimeout(guard); endTransit(n,mySeq); }
+    };
+    var guard=setTimeout(function(){ endTransit(n,mySeq); },10000);
+    tv.onended=function(){ clearTimeout(guard); endTransit(n,mySeq); };
+    tv.onerror=function(){ clearTimeout(guard); endTransit(n,mySeq); };
+    var p=tv.play();
+    if(p&&p.catch) p.catch(function(){ if(seq!==mySeq) return; clearTimeout(guard); endTransit(n,mySeq); });
   }
 
   var noteTimer;
-  function note(msg){
-    hud.textContent = msg;
-    clearTimeout(noteTimer);
-    noteTimer = setTimeout(paint, 3500);
-  }
+  function note(msg){ hud.textContent=msg; clearTimeout(noteTimer); noteTimer=setTimeout(paint,3500); }
 
   document.addEventListener("keydown", function(e){
     if(e.key==="t"||e.key==="T"){
-      clipsOn = !clipsOn;
-      try { localStorage.setItem("tpClips", clipsOn ? "on" : "off"); } catch(err){}
-      note(clipsOn ? "clips ON (remembered)" : "clips OFF (remembered)");
-      return;
+      clipsOn=!clipsOn;
+      try{ localStorage.setItem("tpClips", clipsOn?"on":"off"); }catch(err){}
+      note(clipsOn?"motion ON (remembered)":"motion OFF (remembered)"); return;
     }
-    if(inTransit){ e.preventDefault(); tv.onended && tv.onended(); return; }
+    if(inTransit){ e.preventDefault(); if(tv.onended) tv.onended(); return; }
     if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") go(current+1);
     if(e.key==="ArrowLeft"||e.key==="PageUp") go(current-1);
     if(e.key==="Home") go(0);
     if(e.key==="End") go(slides.length-1);
   });
   document.addEventListener("pointerdown", function(e){
-    /* #tv has pointer-events:none, so clicks land here: skip via the same
-       path keys use, or the documented click-to-skip is dead code. */
+    if(e.target.closest("a")) return;              /* let citation links work */
     if(inTransit){ if(tv.onended) tv.onended(); return; }
     go(current + (e.clientX > innerWidth/2 ? 1 : -1));
   });
+  /* touch: horizontal swipe only, so vertical scroll gestures do not page */
+  var tx=0, ty=0;
+  document.addEventListener("touchstart",function(e){
+    tx=e.changedTouches[0].clientX; ty=e.changedTouches[0].clientY;
+  },{passive:true});
+  document.addEventListener("touchend",function(e){
+    var dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(current + (dx<0?1:-1));
+  },{passive:true});
 
-  try { console.log("motion build v9"); } catch(e){}
-
-  window.__proto_state = function(){ return {current:current, inTransit:inTransit, clipsOn:clipsOn, sysReduced:sysReduced,
-    videoTime:tv.currentTime, videoEnded:tv.ended, videoShown:tv.classList.contains("show")}; };
-  window.__proto_go = go;   /* absolute slide index */
+  try{ console.log("motion build v10 - live text, charts and citations"); }catch(e){}
+  window.__proto_state=function(){ return {current:current,inTransit:inTransit,clipsOn:clipsOn,
+    videoTime:tv.currentTime,videoShown:tv.classList.contains("show")}; };
+  window.__proto_go=go;
   paint();
 })();
 </script>

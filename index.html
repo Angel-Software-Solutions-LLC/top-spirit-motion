@@ -57,7 +57,7 @@ html,body{margin:0;height:100%;background:var(--navy-950);overflow:hidden;
   letter-spacing:.2em;text-transform:uppercase;color:var(--dim);opacity:.75}
 
 /* ---------- body grid ---------- */
-.body{position:absolute;left:104px;right:104px;top:180px;bottom:238px;z-index:2;
+.body{position:absolute;left:104px;right:104px;top:180px;bottom:262px;z-index:2;
   display:flex;flex-direction:column;min-height:0}
 .eyebrow{font:500 13px/1 var(--mono);letter-spacing:.26em;text-transform:uppercase;
   color:var(--aqua);margin-bottom:22px;flex:0 0 auto}
@@ -93,17 +93,22 @@ h1.xs{font-size:54px;max-width:27ch}
 /* ---------- footer: caption, citation, number ---------- */
 /* The footer occupies a guaranteed band so a long citation can never
    climb into the body copy. .body's bottom is set to clear this. */
-.foot{position:absolute;left:104px;right:104px;bottom:48px;height:148px;z-index:3;
+.foot{position:absolute;left:104px;right:104px;bottom:44px;height:176px;z-index:3;
   display:flex;flex-direction:column;justify-content:flex-start}
 .caption{display:flex;align-items:center;gap:16px;font:500 12px/1 var(--mono);
   letter-spacing:.2em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
 .caption i{display:block;width:34px;height:1px;background:var(--aqua);flex:0 0 auto}
+/* Citations are the deck's stated differentiator, so they have to survive being
+   watched over a compressed screen share. --citefs is set in JS from the stage
+   scale so the RENDERED size never falls below roughly 13px, however small the
+   presenter's window is. A citation nobody can read is not evidence. */
 .cite{margin-top:13px;padding-top:11px;border-top:1px solid rgba(138,245,233,.10);
-  font:400 12px/1.5 var(--mono);color:var(--dim);max-width:1620px;letter-spacing:.01em}
+  font:400 var(--citefs,15px)/1.5 var(--mono);color:var(--dim);max-width:1620px;
+  letter-spacing:.01em}
 .cite b{color:var(--muted);font-weight:500}
-.grade{display:inline-block;min-width:17px;padding:1px 5px;margin:0 3px;border-radius:3px;
-  font:600 10.5px/1.5 var(--mono);text-align:center;vertical-align:1px;
-  border:1px solid currentColor}
+.grade{display:inline-block;min-width:18px;padding:1px 6px;margin:0 3px;border-radius:3px;
+  font:600 calc(var(--citefs,15px) * .88)/1.5 var(--mono);text-align:center;
+  vertical-align:1px;border:1px solid currentColor}
 .g-a{color:var(--aqua)} .g-b{color:var(--blue)} .g-c{color:var(--gold)}
 .g-d{color:#c98a8a} .g-e{color:var(--dim)}
 .num{position:absolute;right:0;bottom:0;font:500 13px/1 var(--mono);color:var(--dim);
@@ -187,7 +192,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="wash"></div>
   <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
-  <div class="hint">Scroll &middot; Swipe &middot; Arrow keys</div>
+  <div class="hint">Arrow keys &middot; Swipe &middot; T for motion</div>
   <div class="body">
     <div class="eyebrow rv">Executive discussion &middot; <time datetime="2026-08-17">17 August 2026</time></div>
     <h1 class="rv">One group AI strategy.<br>One controlled proof in an operating company.</h1>
@@ -345,17 +350,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   </div>
   <div class="foot rv">
     <div class="caption"><i></i>Group direction &middot; Local proof point</div>
-    <div class="cite"><b>Sources:</b> Budgetbegleitgesetz 2027 to 2028,
-      <cite>BGBl. I Nr. 62/2026</cite>, enacted 29 July 2026, Artikel 29, amending AlkStG 2022
-      <span class="grade g-a">A</span> &middot;
-      SAP maintenance strategy for SAP Business Suite 7, SAP Notes 1648480 and 52505
-      <span class="grade g-d">D</span> (vendor lifecycle documentation, behind an S-user
-      login). Retrieved <time datetime="2026-08-16">16 August 2026</time>.
-      <b>How much of the excise lands on you, we have not sized.</b> Austrian domestic
-      release carries the new rate in full. Product leaving under duty suspension is taxed
-      at the destination country's rate, so across a group with an export arm the exposure
-      is mixed. All of this is public, all of it is Austrian statute, and none of it is a
-      claim about your volumes. <b>Also not stated:</b> which enhancement pack you run.</div>
+    <div class="cite"><b>Sources:</b> <cite>BGBl. I Nr. 62/2026</cite>, Artikel 29,
+      amending AlkStG 2022 <span class="grade g-a">A</span> &middot; SAP maintenance
+      strategy, Notes 1648480 and 52505 <span class="grade g-d">D</span>, vendor
+      documentation behind a login. Retrieved <time datetime="2026-08-16">16 Aug 2026</time>.
+      <b>We have not sized how much of this lands on you.</b> Domestic Austrian release
+      carries the rate in full; product leaving under duty suspension is taxed at
+      destination, so a group with an export arm is mixed. Public Austrian statute, not a
+      claim about your volumes. Nor do we state which enhancement pack you run.</div>
     <div class="num">03</div>
   </div>
 </section>
@@ -711,6 +713,12 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   function fitStage(){
     var k = Math.min(innerWidth/1920, innerHeight/1080);
     stage.style.setProperty("--k", k);
+    /* Citation size is chosen so the RENDERED height holds at ~13px however
+       far the stage is scaled down. On a shared window at k=0.56 a fixed 12px
+       citation lands at 6.7px, which is unreadable, and the citations are the
+       one thing on this deck the reader is invited to check. */
+    var fs = Math.min(20, Math.max(15, 13 / k));
+    stage.style.setProperty("--citefs", fs.toFixed(2) + "px");
   }
   addEventListener("resize", fitStage, {passive:true});
   addEventListener("orientationchange", fitStage);
@@ -805,8 +813,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     if(e.key==="Home") go(0);
     if(e.key==="End") go(slides.length-1);
   });
+  /* A click that merely restores focus to the browser must not advance the
+     deck. Over a screen share the presenter clicks the window to bring it
+     forward constantly, and every one of those was paging the slide. Ignore
+     any pointerdown within 500ms of the window regaining focus. */
+  var focusedAt = 0;
+  addEventListener("focus", function(){ focusedAt = Date.now(); });
+  addEventListener("blur",  function(){ focusedAt = 0; });
   document.addEventListener("pointerdown", function(e){
     if(e.target.closest("a")) return;              /* let citation links work */
+    if(Date.now() - focusedAt < 500){ focusedAt = 0; return; }   /* focus-restoring click */
+    if(getSelection && String(getSelection()) ) return;          /* reading, not navigating */
     if(inTransit){ if(tv.onended) tv.onended(); return; }
     go(current + (e.clientX > innerWidth/2 ? 1 : -1));
   });

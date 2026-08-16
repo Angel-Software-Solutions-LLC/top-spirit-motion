@@ -142,7 +142,11 @@ svg.chart .axis{stroke:rgba(138,245,233,.16);stroke-width:1}
 svg.chart .tick{stroke:rgba(138,245,233,.10);stroke-width:1}
 
 /* bar grow */
-.bar{transform:scaleX(0);transform-origin:left center;
+/* transform-box:fill-box is load-bearing, not decoration. Without it an SVG
+   transform-origin resolves against user space rather than the element, so any
+   bar that does not start at x=0 grows from the wrong point. The maintenance
+   chart has one that starts at x=710. */
+.bar{transform:scaleX(0);transform-box:fill-box;transform-origin:left center;
   transition:transform 1s var(--chart-ease)}
 .slide.active .bar{transform:scaleX(1)}
 /* line draw */
@@ -230,7 +234,10 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="wash"></div>
   <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
-  <div class="hint">Arrow keys &middot; Swipe &middot; T for motion</div>
+  <!-- Navigation only. The motion key is presenter knowledge and naming it here
+       would put it on the client's screen, which is the thing the hidden hud
+       exists to prevent. It lives in the room card instead. -->
+  <div class="hint">Arrow keys &middot; Swipe &middot; Print for a handout</div>
   <div class="body">
     <div class="eyebrow rv">Executive discussion &middot; <time datetime="2026-08-17">17 August 2026</time></div>
     <h1 class="rv">One group AI strategy.<br>One controlled proof in an operating company.</h1>
@@ -683,16 +690,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   </div>
   <div class="foot rv">
     <div class="caption"><i></i>Named people &middot; Named responsibilities</div>
-    <div class="cite"><b>Verifiable now, and not graded because it does not need to be:</b>
-      three merged fixes in public version control, each openable in a browser. A
-      proxy-host guard fix in the OpenCLAW project, commit <code>bffb83a</code>; a
-      credential-routing fix in the Omnigent project, commit <code>8d1ceb0</code>; and a
-      recovery-state fix in the Nimbalyst project, commit <code>7155256</code>.
-      <b>What that is and is not:</b> engineering contributions by one named member of
-      this team, not client outcomes, not delivery by this firm, and not a claim about
-      scale. <b>Not claimed:</b> named client references. Roles, availability and a
-      one-page responsibility matrix are confirmed before appointment, not asserted
-      here.</div>
+    <div class="cite"><b>Verifiable now:</b> three merged fixes, checked
+      <time datetime="2026-08-16">16 Aug 2026</time> and openable without an account.
+      <code>openclaw/openclaw</code> <code>bffb83a</code>,
+      <code>omnigent-ai/omnigent</code> <code>8d1ceb0</code>,
+      <code>nimbalyst/nimbalyst</code> <code>7155256</code>. Ungraded because they are
+      the source rather than a report of one. <b>Scope:</b> engineering by one named
+      member of this team, not client outcomes and not delivery by this firm. No client
+      references claimed.</div>
     <div class="num">10</div>
   </div>
 </section>
@@ -718,7 +723,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
         <p><strong>If it sits with you</strong>, authorise one scoping session to define
           the discovery proposal. <strong>If it sits above this meeting</strong>, name who
           signs it and roughly when, and we will work to that instead. Either way, a dated
-          placeholder line in the 2027 plan commits nothing and keeps an October decision
+          placeholder line in the 2027 plan commits nothing and keeps a later decision
           from being stranded.</p></div>
     </div>
     <div class="cols c2 rv" style="margin-top:34px;max-width:1500px">

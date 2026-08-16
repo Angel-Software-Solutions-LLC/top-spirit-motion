@@ -1,6 +1,15 @@
-# This page is meant to be opened from a link we sent, not found in a search
-# result. The repository is public on purpose so the client can inspect the
-# source, and the page still names a client and describes their estate at
-# business level. Reachable is not the same as indexed.
+# Keep this page out of search results, but readable by anyone we send the
+# link to, including an assistant asked to review it on a reader's behalf.
+#
+# Those are two different mechanisms and it is easy to reach for the wrong one.
+# The "noindex" meta tag in index.html is what removes the page from search
+# results. A blanket Disallow here would do something else entirely: it would
+# stop well-behaved fetchers retrieving the page at all, which blocks the
+# reader this deck exists for. It would also be self-defeating, because a
+# crawler that is blocked never reads the noindex tag, so the bare URL can
+# still surface.
+#
+# So: crawling is allowed, indexing is refused in the page itself.
+
 User-agent: *
-Disallow: /
+Allow: /

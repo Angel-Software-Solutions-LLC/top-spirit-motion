@@ -29,9 +29,14 @@ html,body{margin:0;height:100%;background:var(--navy-950);overflow:hidden;
    Keeping a real 1920x1080 coordinate space means every position matches
    the captured backgrounds and the generated clips exactly, so the text
    layer and the motion layer never disagree about where anything sits. */
-#fit{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden}
-#stage{position:relative;width:1920px;height:1080px;transform-origin:50% 50%;
-  transform:scale(var(--k,1));background:var(--navy-950)}
+/* Centre by pinning the stage's own centre to the viewport centre. Grid or
+   flex centring cannot be used here: an item LARGER than its container is
+   start-aligned by the safe-overflow rule, so the stage lands off-centre on
+   every viewport under 1920x1080, which is most laptops. */
+#fit{position:absolute;inset:0;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;
+  transform-origin:50% 50%;
+  transform:translate(-50%,-50%) scale(var(--k,1));background:var(--navy-950)}
 
 .slide{position:absolute;inset:0;opacity:0;pointer-events:none;
   transition:opacity .22s ease}

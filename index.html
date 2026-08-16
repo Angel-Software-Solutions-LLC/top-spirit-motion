@@ -170,8 +170,16 @@ svg.chart .tick{stroke:rgba(138,245,233,.10);stroke-width:1}
   background:rgba(138,245,233,.12);z-index:4}
 #rail i{display:block;height:100%;background:var(--aqua);width:0;
   transition:width .45s var(--ease)}
+/* PRESENTER CHROME, HIDDEN BY DEFAULT. This is a screen share for sixty
+   minutes: a slide counter here duplicates the number already in the footer,
+   and any hint about the motion keys advertises to the buyer that we are
+   worried about our own transitions. So the hud stays invisible and surfaces
+   only for a moment when the driver actually presses a key, which is the one
+   case where feedback is worth more than discretion. */
 .hud{position:fixed;left:16px;bottom:10px;color:var(--dim);
-  font:11px/1.4 var(--mono);z-index:9;text-shadow:0 1px 3px #000;opacity:.8}
+  font:11px/1.4 var(--mono);z-index:9;text-shadow:0 1px 3px #000;
+  opacity:0;transition:opacity .28s ease;pointer-events:none}
+.hud.show{opacity:.8}
 
 a{color:var(--aqua-soft);text-decoration:none;border-bottom:1px solid rgba(138,245,233,.35)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
@@ -781,11 +789,9 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
     fill.style.width = (((current+1)/slides.length)*100).toFixed(2) + "%";
-    /* The hint has to be visible while motion is ON, because the presenter who
-       has never heard of T is the whole audience for it. Showing it only when
-       motion is already off told you how to turn it back on. */
-    hud.textContent = (current+1)+" / "+slides.length+
-      (clipsOn ? "   T = instant transitions" : "   motion off - T restores");
+    /* Kept current for the moments the hud is actually surfaced, but never
+       shown on its own: the client is watching this screen. */
+    hud.textContent = (current+1) + " / " + slides.length;
   }
   function commit(n){ current=n; paint(); tv.classList.remove("show"); }
 
@@ -839,14 +845,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     if(p&&p.catch) p.catch(function(){ if(seq!==mySeq) return; clearTimeout(guard); endTransit(n,mySeq); });
   }
 
+  /* Surface the hud only for a beat, and only in response to a deliberate
+     keypress. It fades itself out again so nothing persists on the shared
+     screen. */
   var noteTimer;
-  function note(msg){ hud.textContent=msg; clearTimeout(noteTimer); noteTimer=setTimeout(paint,3500); }
+  function note(msg){
+    hud.textContent = msg;
+    hud.classList.add("show");
+    clearTimeout(noteTimer);
+    noteTimer = setTimeout(function(){ hud.classList.remove("show"); paint(); }, 2600);
+  }
 
   document.addEventListener("keydown", function(e){
     if(e.key==="t"||e.key==="T"){
       clipsOn=!clipsOn;
       try{ localStorage.setItem("tpClips", clipsOn?"on":"off"); }catch(err){}
-      note(clipsOn?"motion ON (remembered)":"motion OFF (remembered)"); return;
+      note(clipsOn?"motion on":"motion off, transitions instant"); return;
     }
     if(inTransit){ e.preventDefault(); if(tv.onended) tv.onended(); return; }
     if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") go(current+1);

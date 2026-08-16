@@ -809,7 +809,31 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
        shown on its own: the client is watching this screen. */
     hud.textContent = (current+1) + " / " + slides.length;
   }
-  function commit(n){ current=n; paint(); tv.classList.remove("show"); }
+  function commit(n){ current=n; paint(); tv.classList.remove("show"); warm(n); }
+  /* warm(n), not warm(n+1): arriving at slide n, the clip needed NEXT is the
+     one leaving n. Prefetching n+1 warms the clip after the one about to be
+     used, so every transition still raced a cold fetch. */
+
+  /* WARM THE NEXT CLIP WHILE THE READER IS ON THIS SLIDE.
+     Sources were only attached at transition time, so the first move after a
+     cold load raced a 2MB fetch and the clip reported zero playback: measured
+     leg 1 to 2 at 0.0s and legs 2 to 3 and 4 to 5 short, while every later leg
+     ran a consistent 6.9s once the cache was warm. To a reader that first
+     stall looks like a deck that does not work. A presenter spends far longer
+     than a fetch on any one slide, so prefetching the NEXT clip on arrival
+     costs nothing and removes the race. */
+  var warmed = {};
+  function warm(n){
+    var clip = CLIPS[n + "-" + (n + 1)];
+    if(!clip || warmed[clip] || !clipsOn) return;
+    warmed[clip] = 1;
+    try {
+      var l = document.createElement("link");
+      l.rel = "prefetch"; l.as = "video";
+      l.href = clip.replace(/\.mp4$/, ".webm");
+      document.head.appendChild(l);
+    } catch(e){}
+  }
 
   /* Generation-numbered callbacks: any callback minted by a transition
      carries its generation and no-ops once a skip or a newer transition
@@ -918,6 +942,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     videoTime:tv.currentTime,videoShown:tv.classList.contains("show")}; };
   window.__proto_go=go;
   paint();
+  warm(0);   /* first move should never race a cold fetch */
 })();
 </script>
 </body>

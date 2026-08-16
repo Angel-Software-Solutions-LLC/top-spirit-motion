@@ -1,0 +1,6 @@
+# This page is meant to be opened from a link we sent, not found in a search
+# result. The repository is public on purpose so the client can inspect the
+# source, and the page still names a client and describes their estate at
+# business level. Reachable is not the same as indexed.
+User-agent: *
+Disallow: /

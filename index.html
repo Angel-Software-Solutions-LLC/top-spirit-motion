@@ -123,8 +123,12 @@ h1.xs{font-size:54px;max-width:27ch}
   vertical-align:1px;border:1px solid currentColor}
 .g-a{color:var(--aqua)} .g-b{color:var(--blue)} .g-c{color:var(--gold)}
 .g-d{color:#c98a8a} .g-e{color:var(--dim)}
-.num{position:absolute;right:0;bottom:0;font:500 13px/1 var(--mono);color:var(--dim);
-  letter-spacing:.1em}
+/* Slide number: document furniture, not presenter chrome. 13px dim grey was
+   invisible over a compressed video stream, which defeats "back to slide 4"
+   references in both directions. Legible but quiet, with the total. */
+.num{position:absolute;right:0;bottom:0;font:500 16px/1 var(--mono);color:var(--muted);
+  letter-spacing:.12em}
+.num::after{content:" / 11";color:var(--dim)}
 
 /* ---------- reveal, matching the 700ms feel ---------- */
 .rv{opacity:0;transform:translateY(18px);

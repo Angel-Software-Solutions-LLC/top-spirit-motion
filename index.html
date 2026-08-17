@@ -215,12 +215,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   @page{size:A4 landscape;margin:0}
   html,body{overflow:visible;height:auto;background:#fff}
   #fit{position:static;overflow:visible}
-  #stage{position:static;transform:none;width:1920px;height:auto;background:none}
+  /* Layout width must match the SCALED content, not the 1920px design width:
+     any box wider than the page makes Chromium shrink the whole document to
+     fit, stacking a second reduction on top of the transform. */
+  #stage{position:static;transform:none;width:1115px;height:auto;background:none}
   #tv,#rail,.hud,.hint{display:none !important}
   .slide{position:relative;inset:auto;opacity:1 !important;pointer-events:auto;
     width:1920px;height:1080px;overflow:hidden;
-    transform:scale(0.1536);transform-origin:top left;   /* 1920px into 295mm */
-    margin:0 0 -914px 0;                                  /* 1080 * (1 - 0.1536) */
+    /* Print scaling uses zoom, not transform: zoom changes the LAYOUT size, so
+       the page geometry and the visual geometry agree and no negative-margin
+       compensation is needed. 295mm printable is about 1115 CSS px, and
+       1115/1920 = 0.5807. The original 0.1536 divided millimetres by pixels
+       (295/1920) and printed each slide into the top-left sixth of the page.
+       zoom is fine here because the handout instruction prescribes printing
+       from Edge or Chrome. */
+    transform:none;zoom:0.5807;
+    margin:0;
     break-after:page;page-break-after:always}
   .slide:last-of-type{break-after:auto;page-break-after:auto}
   /* every reveal and chart animation resolved to its end state */
@@ -231,8 +241,11 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   .cfade{opacity:1 !important}
   .rv,.bar,.draw,.pop,.cfade{transition:none !important}
   /* citations are the reason this handout exists, so lift them off the floor */
-  .cite{font-size:15px !important;color:#26333a !important}
-  .cite b{color:#0b1518 !important}
+  /* The slide photographs are img elements and DO print, so the ground stays
+     dark on paper; the old dark-ink override assumed white paper and made the
+     citations dark-on-dark. Light ink, larger size. */
+  .cite{font-size:15px !important;color:#c8d6dd !important}
+  .cite b{color:#eef7f9 !important}
 }
 </style>
 </head>

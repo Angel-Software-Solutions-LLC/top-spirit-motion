@@ -814,14 +814,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   };
 
   var stored=null; try{ stored=localStorage.getItem("tpClips"); }catch(e){}
-  /* First-visit default honours the OS reduced-motion preference: a reader who
-     has asked their system for less motion gets instant transitions from the
-     first keypress. The CSS block near the top already calms the small reveals;
-     this covers the full-screen clips, which are the motion that matters. An
-     explicit T press (stored) still wins in either direction. */
-  var reduceMotion = false;
-  try { reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e){}
-  var clipsOn = stored ? (stored==="on") : !reduceMotion;
+  /* Motion is ON by default, operator decision 17 August. An earlier build
+     keyed the first-visit default to the OS reduced-motion preference, but
+     Windows machines with "animation effects" switched off (common, and
+     usually set for performance rather than need) report that preference to
+     the browser, so first-time readers, including the operator, were getting
+     a still deck. The transitions are the design. The CSS block near the top
+     still calms the small reveals for reduced-motion readers, and T toggles
+     the clips instantly and sticks. */
+  var clipsOn = stored ? (stored==="on") : true;
 
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });

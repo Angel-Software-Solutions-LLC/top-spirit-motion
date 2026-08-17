@@ -30,6 +30,7 @@ runs gets an owner, a boundary, a metric and a stop rule before it starts.
 
 - The briefing deck: https://angel-software-solutions-llc.github.io/top-spirit-motion/
 - Its public source repository: https://github.com/Angel-Software-Solutions-LLC/top-spirit-motion
+- The evidence ledger: https://github.com/Angel-Software-Solutions-LLC/top-spirit-motion/blob/main/EVIDENCE.md
 
 The deck's text is live HTML, deliberately: selectable, printable and
 readable by assistive software and by your assistant. The repository README
@@ -51,9 +52,10 @@ E our own offer or inference.
 | SAP mainstream maintenance for older ECC enhancement packages has ended or ends 31 December 2027, extended support at a premium to 2030 | SAP Notes 1648480 and 52505 | D |
 | The European Commission adopted a commitments decision binding SAP for ten years, covering its on-premise maintenance and support | Case AT.40823, decision adopted 9 July 2026 | A |
 
-The first two rows appear on the deck itself, which is why its README counts
-exactly two grade A claims there; the AT.40823 row is made in our wider
-material and in this briefing, not on a slide.
+All three grade A rows appear on the deck itself with their sources linked.
+The evidence ledger above holds the full record: each claim, its source, the
+limitation it carries, and the claims we removed because they failed
+checking.
 
 One absence to check: there are no competitor case studies in our material.
 Three research passes found no European or DACH beverage distributor
@@ -105,8 +107,9 @@ them. Ask us, in writing, any time:
 3. You are three people. What happens if one of you is unavailable?
    (A fair question we would rather you weighed openly than discover; ask
    it and we will answer it plainly rather than with a slide.)
-4. Which of your claims failed your own verification? (Several did. We keep
-   the list and will share it; the corrected material is what you see now.)
+4. Which of your claims failed your own verification? (Several did. The
+   removed claims and the reasons are published in the evidence ledger; the
+   corrected material is what you see now.)
 5. References and documentary evidence for the team's stated experience.
    (Available during diligence, on request, not printed on slides.)
 6. What exactly would you deliver first? (One page, drafted from one

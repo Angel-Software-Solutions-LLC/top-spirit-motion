@@ -29,10 +29,11 @@ are printed on slide 1 and used consistently:
 | D | vendor published |
 | E | our own offer or inference |
 
-Exactly two claims on the deck are graded A. Both are statute and you can open
-them yourself: the Austrian excise change in BGBl. I Nr. 62/2026, and the
-articles of Regulation (EU) 2024/1689. Everything we could not stand behind at
-grade C or better was removed rather than softened.
+Three claims on the deck are graded A, and you can open each yourself: the
+Austrian excise change in BGBl. I Nr. 62/2026, the Commission commitments
+decision in Case AT.40823, and the articles of Regulation (EU) 2024/1689.
+Everything we could not stand behind at grade C or better was removed rather
+than softened; the removed claims are listed in [EVIDENCE.md](EVIDENCE.md).
 
 **2. The deck states what it does not claim.** Several slides carry an
 explicit "not stated" or "we have not sized" line. Those are not hedges added

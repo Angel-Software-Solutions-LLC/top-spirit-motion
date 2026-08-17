@@ -53,7 +53,8 @@ allows, a claim about tax incidence that overstated what our research
 supported, an answer to a licensing question that belongs to the licence
 holder rather than to us, and a label that crossed the very line it annotated.
 
-That record is left intact deliberately. A deck that argues for evidence gates
+That record is left intact deliberately. The full claim ledger, including the
+claims we removed and why, is in [EVIDENCE.md](EVIDENCE.md). A deck that argues for evidence gates
 and stop rules should be able to show its own, and the useful part of an audit
 trail is the part where something was caught. If you would rather judge the
 artifact than the process, read only the rendered page; if you want to know

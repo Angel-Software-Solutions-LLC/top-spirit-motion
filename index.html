@@ -801,7 +801,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   };
 
   var stored=null; try{ stored=localStorage.getItem("tpClips"); }catch(e){}
-  var clipsOn = stored ? (stored==="on") : true;
+  /* First-visit default honours the OS reduced-motion preference: a reader who
+     has asked their system for less motion gets instant transitions from the
+     first keypress. The CSS block near the top already calms the small reveals;
+     this covers the full-screen clips, which are the motion that matters. An
+     explicit T press (stored) still wins in either direction. */
+  var reduceMotion = false;
+  try { reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e){}
+  var clipsOn = stored ? (stored==="on") : !reduceMotion;
 
   function paint(){
     slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });

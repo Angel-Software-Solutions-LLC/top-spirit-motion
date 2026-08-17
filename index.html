@@ -51,6 +51,13 @@ html,body{margin:0;height:100%;background:var(--navy-950);overflow:hidden;
 .slide .wash{position:absolute;inset:0;
   background:linear-gradient(100deg,var(--navy-950) 0%,rgba(2,6,14,.94) 34%,rgba(3,8,18,.72) 52%,rgba(3,8,18,.30) 78%,rgba(3,8,18,.12) 100%)}
 .slide.wide .wash{background:linear-gradient(180deg,rgba(2,6,14,.93) 0%,rgba(2,6,14,.86) 55%,rgba(2,6,14,.95) 100%)}
+/* The closing slide carries one ask and little else, so the flat wide wash left the
+   lower half reading as empty rather than composed. Let the photograph through on the
+   right, keep the copy side dark enough that the ask stays legible on a compressed
+   stream. Scoped to s11 so the other wide slides, which are full of content, are
+   unchanged. */
+#s11 .wash{background:linear-gradient(100deg,rgba(2,6,14,.97) 0%,rgba(2,6,14,.94) 38%,
+  rgba(3,8,18,.78) 58%,rgba(3,8,18,.42) 82%,rgba(3,8,18,.20) 100%)}
 
 /* ---------- persistent chrome ---------- */
 .brand{position:absolute;left:104px;top:56px;display:flex;gap:16px;align-items:center;z-index:3}
@@ -733,43 +740,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The decision requested</div>
-    <h1 class="xs rv">Three things on Monday. None of them is money, and none needs an
-      answer you are not in a position to give.</h1>
-    <div class="cols c3 rv">
-      <div class="col"><div class="n">01</div><div class="k">Confirm the objective</div>
-        <p>Confirm the group objective, and whether Top Spirit is the first proof point.
-          Correcting us is as useful to us as agreeing with us.</p></div>
-      <div class="col"><div class="n">02</div><div class="k">Name the owners</div>
-        <p>An executive sponsor, a business owner, and an IT and security counterpart.
-          Naming them costs nothing and commits no budget.</p></div>
-      <div class="col"><div class="n">03</div><div class="k">Or tell us who signs</div>
-        <p><strong>If it sits with you</strong>, authorise one scoping session to define
-          the discovery proposal. <strong>If it sits above this meeting</strong>, name who
-          signs it and roughly when, and we will work to that instead. Either way, a dated
-          placeholder line in the 2027 plan commits nothing and keeps a later decision
-          from being stranded.</p></div>
-    </div>
-    <div class="cols c2 rv" style="margin-top:34px;max-width:1500px">
-      <div class="col"><div class="k">How to check this briefing</div>
-        <p>Every external figure above carries a source, a retrieval date and a grade,
-          and two of them are statute you can read directly. There are no competitor
-          case studies here on purpose: we would rather measure your numbers than
-          quote someone else's. Ask us about any figure and you will get its source or
-          an admission that we do not have one.</p></div>
-      <div class="col"><div class="k">What would make us stop</div>
-        <p>No lawful access to the data. No named owner. A baseline that cannot be
-          measured. Or a cost out of proportion to the decision it informs. Any one of
-          these ends the work at a price agreed before it starts, and you keep
-          everything produced up to that point.</p></div>
-    </div>
+    <div class="eyebrow rv">The only ask</div>
+    <h1 class="rv" style="max-width:36ch">We write one page.<br>You choose what it has to decide.</h1>
+    <p class="lede rv">That page names one decision, who owns it, what evidence would
+      settle it, and what would make the answer no.</p>
+    <p class="lede rv">It commits no budget and binds nobody. If the answer is no, we
+      would rather have that today than a polite yes.</p>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Agree the next step, not the programme</div>
-    <div class="cite"><b>Standing position:</b> we quote no fee before seeing one bounded
-      extract, promise no saving, take no share of any saving, resell no licences, and
-      recommend no core-system vendor <span class="grade g-e">E</span>. Prepared by Angel
-      Software Solutions LLC for discussion on <time datetime="2026-08-17">17 August 2026</time>.</div>
+    <div class="caption"><i></i>The ask is a page, not a pilot</div>
+    <div class="cite"><b>Sources on this slide:</b> none. This page states our ask only.
+      Prepared by Angel Software Solutions LLC for discussion on
+      <time datetime="2026-08-17">17 August 2026</time>.</div>
     <div class="num">11</div>
   </div>
 </section>

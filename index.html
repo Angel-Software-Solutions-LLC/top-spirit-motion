@@ -3,13 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Angel Software Solutions - Executive Partner Briefing</title>
-<!-- Reachable by link, not by search. The repository is public so the client can
-     inspect it, which is deliberate, but the page names a client and describes
-     their estate at business level, and neither belongs in a search index or a
-     third party's link preview. -->
+<title>Angel Software Solutions - Executive Fit-and-Method Briefing</title>
+<!-- Reachable by link, not by search. This public build does not name the intended
+     client or publish facts supplied in private client conversations. -->
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="description" content="Executive partner briefing. Every external figure carries a source, a retrieval date and an evidence grade.">
+<meta name="description" content="Executive fit-and-method briefing for scoping a governed AI decision.">
 <style>
 @font-face{font-family:"Manrope";src:url("fonts/manrope-variable.ttf") format("truetype");
   font-weight:200 800;font-display:swap}
@@ -118,11 +116,6 @@ h1.xs{font-size:54px;max-width:27ch}
   font:400 var(--citefs,15px)/1.5 var(--mono);color:var(--dim);max-width:1620px;
   letter-spacing:.01em}
 .cite b{color:var(--muted);font-weight:500}
-.grade{display:inline-block;min-width:18px;padding:1px 6px;margin:0 3px;border-radius:3px;
-  font:600 calc(var(--citefs,15px) * .88)/1.5 var(--mono);text-align:center;
-  vertical-align:1px;border:1px solid currentColor}
-.g-a{color:var(--aqua)} .g-b{color:var(--blue)} .g-c{color:var(--gold)}
-.g-d{color:#c98a8a} .g-e{color:var(--dim)}
 .num{position:absolute;right:0;bottom:0;font:500 13px/1 var(--mono);color:var(--dim);
   letter-spacing:.1em}
 
@@ -197,12 +190,58 @@ svg.chart .tick{stroke:rgba(138,245,233,.10);stroke-width:1}
   opacity:0;transition:opacity .28s ease;pointer-events:none}
 .hud.show{opacity:.8}
 
+/* Visible, keyboard-operable controls are deliberately quiet rather than hidden.
+   They make the deck usable without requiring the presenter to remember a key,
+   and fade back visually when nobody is interacting with them. */
+.deck-controls{position:fixed;right:18px;bottom:16px;z-index:12;display:flex;
+  align-items:center;gap:7px;padding:7px;border:1px solid rgba(138,245,233,.22);
+  border-radius:9px;background:rgba(2,6,14,.88);box-shadow:0 12px 34px rgba(0,0,0,.34);
+  opacity:.52;transition:opacity .2s ease}
+.deck-controls:hover,.deck-controls:focus-within{opacity:1}
+.deck-controls button{border:1px solid rgba(138,245,233,.26);border-radius:6px;
+  background:rgba(8,19,33,.96);color:var(--ink);padding:7px 10px;
+  font:500 11px/1 var(--mono);letter-spacing:.04em;cursor:pointer}
+.deck-controls button:hover{border-color:var(--aqua);color:var(--aqua-soft)}
+.deck-controls button[disabled]{opacity:.38;cursor:default}
+.deck-controls #status{min-width:72px;text-align:center;color:var(--muted);
+  font:500 11px/1 var(--mono)}
+.deck-controls #motion[aria-pressed="true"]{border-color:var(--aqua);color:var(--aqua-soft)}
+
+.portrait-note{display:none;position:fixed;inset:0;z-index:30;padding:34px;
+  background:radial-gradient(circle at 70% 15%,rgba(53,169,241,.12),transparent 42%),
+    var(--navy-950);color:var(--ink);align-items:center;justify-content:center}
+.portrait-note>div{max-width:34rem;border-top:1px solid var(--aqua);padding-top:22px}
+.portrait-note .k{font:500 12px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--aqua)}
+.portrait-note h2{font:700 36px/1.12 var(--font);letter-spacing:-.02em;margin:16px 0 12px}
+.portrait-note p{font:400 18px/1.55 var(--font);color:var(--muted);margin:0 0 22px}
+.portrait-note button{border:1px solid var(--aqua);border-radius:6px;background:transparent;
+  color:var(--aqua-soft);padding:11px 15px;font:500 12px/1 var(--mono);cursor:pointer}
+
 a{color:var(--aqua-soft);text-decoration:none;border-bottom:1px solid rgba(138,245,233,.35)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offset:3px}
+.sr-only{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 @media (prefers-reduced-motion:reduce){
   .rv,.bar,.draw,.pop,.cfade{transition-duration:.01ms !important}
   .slide{transition-duration:.01ms}
+  .deck-controls{transition:none}
+}
+
+/* A 16:9 stage reduced into a portrait phone is technically present but not
+   usable. Give the reader an honest choice instead of microscopic text. */
+@media screen and (orientation:portrait) and (max-width:900px){
+  #fit,.deck-controls,.hud{display:none !important}
+  .portrait-note{display:flex}
+}
+
+/* Below this landscape size, keeping every source note legible would make the
+   fixed footer collide with the slide body. Offer the handout instead of
+   pretending a microscopic citation is usable. */
+@media screen and (orientation:landscape) and (max-height:540px),
+       screen and (orientation:landscape) and (max-width:960px){
+  #fit,.deck-controls,.hud{display:none !important}
+  .portrait-note{display:flex}
 }
 
 /* ---------- print: the handout ----------
@@ -212,25 +251,17 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
    slide becomes one landscape page with every animated element resolved to
    its finished state. */
 @media print{
-  @page{size:A4 landscape;margin:0}
-  html,body{overflow:visible;height:auto;background:#fff}
+  /* Keep the PDF at an exact 16:9 page while rendering the 1920 x 1080 deck
+     at two-thirds scale. This preserves full bleed without the A4 double-scale
+     trap and keeps source lines at a readable 10pt in the exported handout. */
+  @page{size:13.333333in 7.5in;margin:0}
+  html,body{overflow:visible;width:auto;height:auto;background:#02060e}
   #fit{position:static;overflow:visible}
-  /* Layout width must match the SCALED content, not the 1920px design width:
-     any box wider than the page makes Chromium shrink the whole document to
-     fit, stacking a second reduction on top of the transform. */
-  #stage{position:static;transform:none;width:1115px;height:auto;background:none}
-  #tv,#rail,.hud,.hint{display:none !important}
+  #stage{position:static;transform:none;width:1280px;height:auto;background:none}
+  #tv,#rail,.hud,.hint,.deck-controls,.portrait-note{display:none !important}
   .slide{position:relative;inset:auto;opacity:1 !important;pointer-events:auto;
     width:1920px;height:1080px;overflow:hidden;
-    /* Print scaling uses zoom, not transform: zoom changes the LAYOUT size, so
-       the page geometry and the visual geometry agree and no negative-margin
-       compensation is needed. 295mm printable is about 1115 CSS px, and
-       1115/1920 = 0.5807. The original 0.1536 divided millimetres by pixels
-       (295/1920) and printed each slide into the top-left sixth of the page.
-       zoom is fine here because the handout instruction prescribes printing
-       from Edge or Chrome. */
-    transform:none;zoom:0.5807;
-    margin:0;
+    transform:none;zoom:.6666667;margin:0;
     break-after:page;page-break-after:always}
   .slide:last-of-type{break-after:auto;page-break-after:auto}
   /* every reveal and chart animation resolved to its end state */
@@ -241,11 +272,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   .cfade{opacity:1 !important}
   .rv,.bar,.draw,.pop,.cfade{transition:none !important}
   /* citations are the reason this handout exists, so lift them off the floor */
-  /* The slide photographs are img elements and DO print, so the ground stays
-     dark on paper; the old dark-ink override assumed white paper and made the
-     citations dark-on-dark. Light ink, larger size. */
-  .cite{font-size:15px !important;color:#c8d6dd !important}
-  .cite b{color:#eef7f9 !important}
+  .cite{font-size:20px !important;color:#a3bcc7 !important}
+  .cite b{color:#c9b98a !important}
 }
 </style>
 </head>
@@ -283,29 +311,23 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
        exists to prevent. It lives in the room card instead. -->
   <div class="hint">Arrow keys &middot; Swipe &middot; Print for a handout</div>
   <div class="body">
-    <div class="eyebrow rv">Executive discussion &middot; <time datetime="2026-08-17">17 August 2026</time></div>
-    <h1 class="rv">One group AI strategy.<br>One controlled proof in an operating company.</h1>
-    <p class="lede rv">Prepared for Marussia Beverages. Every external figure in this
-      briefing carries its source, its retrieval date and an evidence grade, so any
-      claim here can be checked before you act on it.</p>
+    <div class="eyebrow rv">Objective first &middot; <time datetime="2026-08-17">17 August 2026</time></div>
+    <h1 class="sm rv">By the end of today: decide whether there is enough fit to scope the first question.</h1>
+    <p class="lede rv">This is a fit-and-method discussion. No pilot, platform,
+      programme, budget or unpaid analysis is approved today.</p>
     <div class="cols c3 rv">
-      <div class="col"><div class="k">Existing estate first</div>
-        <p>We work with the systems and licences you already own. No new platform, no resale, nothing further to maintain.</p></div>
-      <div class="col"><div class="k">Governance from day one</div>
-        <p>An owner, a boundary, a metric and a stop rule before any use case starts.</p></div>
-      <div class="col"><div class="k">Value before scale</div>
-        <p>One bounded proof against a measured baseline, then a decision. Not a programme.</p></div>
+      <div class="col"><div class="k">Understand</div>
+        <p>The priorities, constraints and decisions already in motion.</p></div>
+      <div class="col"><div class="k">Test fit</div>
+        <p>Whether our evidence-led, licence-neutral method belongs alongside your team and partners.</p></div>
+      <div class="col"><div class="k">Route the next step</div>
+        <p>The question, sponsor, working lead, proof needed, commercial route and date.</p></div>
     </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Prepared for Marussia Beverages</div>
-    <div class="cite"><b>Sources on this slide:</b> none. This page states our position and
-      our offer only. Evidence grades used throughout:
-      <span class="grade g-a">A</span>statute or audited filing &middot;
-      <span class="grade g-b">B</span>company or association reported &middot;
-      <span class="grade g-c">C</span>trade press citing named people &middot;
-      <span class="grade g-d">D</span>vendor published &middot;
-      <span class="grade g-e">E</span>our own offer or inference.</div>
+    <div class="caption"><i></i>Fit before scope &middot; Scope before work</div>
+    <div class="cite"><b>Meeting boundary:</b> understand, test and route. Any paid work
+      would require a separately agreed scope, fee, owner and acceptance test.</div>
     <div class="num">01</div>
   </div>
 </section>
@@ -317,9 +339,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The executive risk</div>
-    <h1 class="sm rv">The immediate risk is fragmented AI activity without ownership,
-      controls or evidence.</h1>
+    <div class="eyebrow rv">Why governance matters</div>
+    <h1 class="sm rv">AI adoption can outrun ownership, controls and evidence.</h1>
     <div class="chartwrap rv">
       <div class="chart-title">Where unmanaged adoption starts</div>
       <svg class="chart" width="820" height="118" viewBox="0 0 820 118" role="img"
@@ -341,11 +362,13 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Value requires control</div>
-    <div class="cite"><b>Source:</b> Microsoft and LinkedIn, <cite>Work Trend Index Annual
-      Report 2024</cite>, 8 May 2024. <span class="grade g-b">B</span>
-      Denominator is <b>AI users</b>, not all employees. Retrieved <time datetime="2026-08-16">16 August 2026</time>.
-      We have not measured this inside your business and do not imply that we have.</div>
+    <div class="caption"><i></i>Context, not a claim about your organisation</div>
+    <div class="cite"><b>Source:</b> Microsoft and LinkedIn,
+      <a href="https://www.microsoft.com/en-us/worklab/work-trend-index/ai-at-work-is-here-now-comes-the-hard-part/"
+         target="_blank" rel="noreferrer"><cite>Work Trend Index Annual Report 2024</cite></a>,
+      8 May 2024. This was a global survey of 31,000 knowledge workers; Austria was not
+      sampled. The denominator is <b>surveyed AI users</b>, not all employees. We have not
+      measured this inside your business.</div>
     <div class="num">02</div>
   </div>
 </section>
@@ -357,99 +380,26 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The planning window</div>
-    <h1 class="xs rv">Two dated decisions already sit in the 2027 calendar.
-      Neither of them is an AI decision.</h1>
-    <div class="chartwrap rv" style="margin-top:26px">
-      <!-- Both rows use a TRUE LINEAR time axis. Row A spans 2013 to 2028 at
-           94.67px per year; row B spans 2025 to 2031 at 236.7px per year.
-           Every marked date sits at its proportional position, so the long
-           flat stretch before 2027 is the real shape of the series and not
-           a drawing convenience. -->
-      <svg class="chart" width="1500" height="352" viewBox="0 0 1500 352" role="img"
-           aria-label="Austrian spirits excise held at 1,200 euro per hectolitre of pure alcohol from March 2014 and rises 30 per cent to 1,560 euro on 1 January 2027. Separately, mainstream maintenance for core ERP enhancement packs 0 to 5 ended 31 December 2025, and for packs 6 to 8 it ends 31 December 2027, with optional extended maintenance at a premium to the end of 2030.">
-        <!-- ================= ROW A: excise, linear 2013 to 2028 ================= -->
-        <text class="lbl" x="0" y="12" font-size="11.5" fill="#7e99a6"
-              letter-spacing="2.6">AUSTRIAN SPIRITS EXCISE &middot; EUR PER HECTOLITRE PURE ALCOHOL</text>
-        <line class="axis" x1="0" y1="140" x2="1420" y2="140"/>
-        <g class="cfade" style="transition-delay:.3s">
-          <line class="tick" x1="0"    y1="134" x2="0"    y2="146"/>
-          <line class="tick" x1="663"  y1="134" x2="663"  y2="146"/>
-          <line class="tick" x1="1325" y1="134" x2="1325" y2="146"/>
-          <text class="lbl" x="0"    y="162" font-size="11.5">2013</text>
-          <text class="lbl" x="641"  y="162" font-size="11.5">2020</text>
-          <text class="lbl" x="1290" y="162" font-size="11.5" fill="#35ead2">2027</text>
-        </g>
-        <!-- 1,000 to Feb 2014 (x=95), 1,200 to Dec 2026 (x=1325), 1,560 after -->
-        <path class="draw" style="--len:1600"
-              d="M0 108 L95 108 L95 80 L1325 80 L1325 30 L1420 30"
-              fill="none" stroke="#35ead2" stroke-width="2.5"
-              stroke-linejoin="round" stroke-linecap="round"/>
-        <g class="cfade" style="transition-delay:.8s">
-          <text class="lbl" x="0"   y="100" font-size="12.5" fill="#7e99a6">EUR 1,000</text>
-          <text class="lbl" x="108" y="72"  font-size="12.5" fill="#a3bcc7">EUR 1,200 &middot; held for 13 years</text>
-          <!-- value sits over its own step, right-aligned so it cannot cross the rise -->
-          <!-- both labels sit to the RIGHT of the rise at x=1325. Anchoring the
-               second one at the far edge made it run leftward straight across the
-               vertical it was annotating. -->
-          <text class="big" x="1420" y="20" font-size="24" fill="#35ead2" text-anchor="end">EUR 1,560</text>
-          <text class="lbl" x="1420" y="52" font-size="13" fill="#35ead2" text-anchor="end">+30%</text>
-        </g>
-
-        <!-- ================= ROW B: maintenance, linear 2025 to 2031 ================= -->
-        <text class="lbl" x="0" y="216" font-size="11.5" fill="#7e99a6"
-              letter-spacing="2.6">CORE ERP MAINTENANCE HORIZON</text>
-        <line class="axis" x1="0" y1="318" x2="1420" y2="318"/>
-        <g class="cfade" style="transition-delay:.3s">
-          <line class="tick" x1="0"    y1="312" x2="0"    y2="324"/>
-          <line class="tick" x1="237"  y1="312" x2="237"  y2="324"/>
-          <line class="tick" x1="473"  y1="312" x2="473"  y2="324"/>
-          <line class="tick" x1="710"  y1="312" x2="710"  y2="324"/>
-          <line class="tick" x1="947"  y1="312" x2="947"  y2="324"/>
-          <line class="tick" x1="1183" y1="312" x2="1183" y2="324"/>
-          <line class="tick" x1="1420" y1="312" x2="1420" y2="324"/>
-          <text class="lbl" x="0"    y="340" font-size="11.5">2025</text>
-          <text class="lbl" x="213"  y="340" font-size="11.5">2026</text>
-          <text class="lbl" x="450"  y="340" font-size="11.5">2027</text>
-          <text class="lbl" x="687"  y="340" font-size="11.5">2028</text>
-          <text class="lbl" x="924"  y="340" font-size="11.5">2029</text>
-          <text class="lbl" x="1160" y="340" font-size="11.5">2030</text>
-          <text class="lbl" x="1397" y="340" font-size="11.5">2031</text>
-        </g>
-        <!-- packs 0-5: ended 31 Dec 2025 => x 0 to 237 -->
-        <rect class="bar d1" x="0" y="238" width="237" height="18" rx="3" fill="#c98a8a" opacity=".6"/>
-        <!-- packs 6-8: to 31 Dec 2027 => x 0 to 710 -->
-        <rect class="bar d2" x="0" y="266" width="710" height="18" rx="3" fill="#c9b98a" opacity=".75"/>
-        <!-- extended, at a premium, to 31 Dec 2030 => x 710 to 1420 -->
-        <rect class="bar d3" x="710" y="266" width="710" height="18" rx="3" fill="rgba(201,185,138,.20)"
-              stroke="rgba(201,185,138,.35)" stroke-dasharray="3 4"/>
-        <g class="cfade" style="transition-delay:.95s">
-          <text class="lbl" x="405" y="252" font-size="12.5" fill="#c98a8a">Packs 0 to 5: mainstream maintenance ended 31 Dec 2025</text>
-          <text class="lbl" x="726" y="280" font-size="12" fill="#7e99a6">extended, at a premium, to end 2030</text>
-          <text class="lbl" x="12"  y="280" font-size="12.5" fill="#02060e" font-weight="600">Packs 6 to 8: ends 31 Dec 2027</text>
-        </g>
-        <!-- today = 16 Aug 2026 => 237 + (228/365)*237 = 385 -->
-        <g class="cfade" style="transition-delay:1.15s">
-          <line x1="385" y1="206" x2="385" y2="328" stroke="#35ead2" stroke-width="1.4" stroke-dasharray="4 5"/>
-          <text class="lbl" x="393" y="208" font-size="11.5" fill="#35ead2">today</text>
-        </g>
-      </svg>
+    <div class="eyebrow rv">The discovery gate</div>
+    <h1 class="sm rv">Four questions determine whether any next step is real.</h1>
+    <div class="cols c4 rv">
+      <div class="col"><div class="n">01</div><div class="k">What decision?</div>
+        <p>Name the business question and what a useful answer would change.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Who owns it?</div>
+        <p>Separate the sponsor, decision owner and working lead.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">What proof?</div>
+        <p>Agree the evidence, inputs and acceptance test a decision needs.</p></div>
+      <div class="col"><div class="n">04</div><div class="k">Which route?</div>
+        <p>Identify funding, procurement and the person who can advance them.</p></div>
     </div>
-    <p class="lede rv" style="max-width:92ch;margin-top:22px;font-size:20px">The first
-      question we would ask is not about AI. It is which enhancement pack your core ERP
-      runs, because the answer decides whether this is a 2027 conversation or an
-      already-overdue one.</p>
+    <p class="lede rv" style="max-width:100ch;margin-top:30px;font-size:22px">If one answer
+      is missing, today can still succeed: name the gap, the person who can close it and
+      the date it comes back.</p>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Group direction &middot; Local proof point</div>
-    <div class="cite"><b>Sources:</b> <cite>BGBl. I Nr. 62/2026</cite>, Artikel 29,
-      amending AlkStG 2022 <span class="grade g-a">A</span> &middot; SAP maintenance
-      strategy, Notes 1648480 and 52505 <span class="grade g-d">D</span>, vendor
-      documentation behind a login. Retrieved <time datetime="2026-08-16">16 Aug 2026</time>.
-      <b>We have not sized how much of this lands on you.</b> Domestic Austrian release
-      carries the rate in full; product leaving under duty suspension is taxed at
-      destination, so a group with an export arm is mixed. Public Austrian statute, not a
-      claim about your volumes. Nor do we state which enhancement pack you run.</div>
+    <div class="caption"><i></i>No invented urgency &middot; No assumed authority</div>
+    <div class="cite"><b>Discussion rule:</b> externally verified dates and technical
+      research become questions until their relevance to the organisation is confirmed.</div>
     <div class="num">03</div>
   </div>
 </section>
@@ -461,24 +411,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The brief as we understand it, to confirm</div>
-    <h1 class="sm rv">Build one group capability. Prove it first in one operating company.</h1>
-    <p class="lede rv">This is our reading of what we have been told, not a record of
-      anything you have approved. Please correct it in the meeting.</p>
+    <div class="eyebrow rv">Possible starting questions</div>
+    <h1 class="sm rv">Which question deserves scoping first?</h1>
+    <p class="lede rv">These are hypotheses for correction. Choose one, combine them or
+      replace them with the question that matters more.</p>
     <div class="cols c3 rv">
-      <div class="col"><div class="k">Group capability</div>
-        <p>One practical rulebook and a shared operating model across the group.</p></div>
-      <div class="col"><div class="k">Operational proof</div>
-        <p>Rank real use cases against a measurable baseline before recommending a pilot.</p></div>
-      <div class="col"><div class="k">Literacy and estate</div>
-        <p>Inventory approved and unsanctioned tools, data exposure and training needs. Use existing licensed systems first.</p></div>
+      <div class="col"><div class="n">A</div><div class="k">Governance and knowledge</div>
+        <p>What common rules, literacy and memory practices would make current AI use safer and more useful?</p></div>
+      <div class="col"><div class="n">B</div><div class="k">Process and continuity</div>
+        <p>Which critical processes depend on undocumented knowledge, and what must be captured first?</p></div>
+      <div class="col"><div class="n">C</div><div class="k">Decision readiness</div>
+        <p>Which reporting, Power BI or ERP decision lacks trusted inputs, ownership or a measurable acceptance test?</p></div>
     </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Our reading, offered for correction</div>
-    <div class="cite"><b>Source:</b> our own conversations with your team, June to
-      August 2026 <span class="grade g-e">E</span>. Not audited, not approved by you,
-      and stated here so it can be corrected rather than assumed.</div>
+    <div class="caption"><i></i>Questions, not a preselected programme</div>
+    <div class="cite">No route is selected until its decision, owner, inputs and proof are clear.</div>
     <div class="num">04</div>
   </div>
 </section>
@@ -490,30 +438,23 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The continuity case</div>
-    <h1 class="sm rv">The first business case is continuity, and it is a management risk
-      before it is an AI opportunity.</h1>
-    <div class="cols c2 rv">
-      <div class="col"><div class="k">What we have been told</div>
-        <p>A core ERP more than twenty years old and a reporting layer over a decade old,
-          neither fully documented, with the working knowledge of both held by very few
-          people. A proof of concept moving reports onto a newer reporting platform is
-          already running.</p></div>
-      <div class="col"><div class="k">Why it comes first</div>
-        <p>Undocumented process knowledge is the dependency under every other decision
-          here, including the core-system decision. It is also the one that gets harder
-          on a fixed timetable rather than a chosen one.</p></div>
+    <div class="eyebrow rv">If continuity is the first question</div>
+    <h1 class="sm rv">Make critical knowledge retrievable, owned and current before automating it.</h1>
+    <div class="cols c3 rv">
+      <div class="col"><div class="n">01</div><div class="k">Capture</div>
+        <p>Map the few decisions and processes where lost context would stop or distort work.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Govern</div>
+        <p>Name an owner, source of truth, review rhythm, access boundary and retirement rule.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">Use</div>
+        <p>Make approved knowledge findable in the tools people already use, with citations and feedback.</p></div>
     </div>
-    <p class="lede rv" style="margin-top:30px;max-width:96ch;font-size:22px">Capturing
-      what those systems actually do is useful whichever core system you choose, and it
-      is useful even if you never buy anything else from us.</p>
+    <p class="lede rv" style="margin-top:30px;max-width:96ch;font-size:22px">The tool can
+      be decided later. First agree what must be remembered, who may rely on it and how
+      anyone can tell whether it is still true.</p>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Continuity before automation</div>
-    <div class="cite"><b>Source:</b> stated to us by your team, August 2026
-      <span class="grade g-e">E</span>. Unaudited and described at business level only.
-      <b>Deliberately omitted:</b> any individual's age, working pattern or leaving date.
-      Those are personal details and they are not ours to publish.</div>
+    <div class="caption"><i></i>Knowledge is an operating asset, not a note-taking app</div>
+    <div class="cite">Conditional design: use only if the meeting confirms continuity as the first question.</div>
     <div class="num">05</div>
   </div>
 </section>
@@ -525,8 +466,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The governance minimum</div>
-    <h1 class="sm rv">Every use case gets an owner, a boundary, a metric and a stop rule.</h1>
+    <div class="eyebrow rv">If governance is the first question</div>
+    <h1 class="sm rv">Every use case needs four controls before it needs another tool.</h1>
     <div class="cols c4 rv">
       <div class="col"><div class="n">01</div><div class="k">Business owner</div>
         <p>Named outcome, baseline and success metric.</p></div>
@@ -537,23 +478,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
       <div class="col"><div class="n">04</div><div class="k">Evidence gate</div>
         <p>Acceptance test, decision record and an explicit go or no-go.</p></div>
     </div>
-    <p class="lede rv" style="margin-top:26px;max-width:112ch;font-size:20px"><strong>The
-      first thing that starts is a written AI position and permission model:</strong> what
-      staff may use, on what data, with whose approval, and what happens to an exception.
-      It needs no data access, no new software and no decision about your core systems,
-      which is why it can begin before anything else is settled. Discovery then produces
-      the use-case register, the minimum control set, the responsibility matrix and the
-      decision log.</p>
+    <p class="lede rv" style="margin-top:26px;max-width:112ch;font-size:20px">If this
+      route is selected, start with a written position: what people may use, on which
+      data, with whose approval, and how exceptions are handled. The scope, outputs and
+      acceptance test are agreed before any work begins.</p>
   </div>
   <div class="foot rv">
     <div class="caption"><i></i>Rules before tools &middot; Evidence before scale</div>
-    <div class="cite"><b>Context:</b> Regulation (EU) 2024/1689, the AI Act. The
-      AI-literacy duty in Article 4 has applied since <time datetime="2025-02-02">2 February 2025</time>
-      and the transparency duties in Article 50 apply from <time datetime="2026-08-02">2 August 2026</time>,
-      both per Article 113 <span class="grade g-a">A</span>. Retrieved
-      <time datetime="2026-08-16">16 August 2026</time>. The control set above is our own
-      design <span class="grade g-e">E</span> and we make no claim that adopting it
-      constitutes compliance. That assessment is your counsel's, not ours.</div>
+    <div class="cite"><b>Context:</b>
+      <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj?locale=en"
+         target="_blank" rel="noreferrer">EU AI Act, Article 4</a>: the AI-literacy duty
+      has applied since <time datetime="2025-02-02">2 February 2025</time>. The controls
+      above are a practical proposal, not legal advice or a claim of compliance.</div>
     <div class="num">06</div>
   </div>
 </section>
@@ -565,32 +501,23 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The operating model</div>
-    <h1 class="sm rv">Three parties. One written operating model.</h1>
+    <div class="eyebrow rv">Roles to allocate, not assume</div>
+    <h1 class="sm rv">A sponsor, a decision owner and a working lead may be three different people.</h1>
     <div class="cols c3 rv">
-      <div class="col"><div class="n">01</div><div class="k">Marussia and Top Spirit</div>
-        <p>Retain formal approval for priorities, data, architecture, security, risk
-          acceptance and <strong>every go or no-go decision</strong>.</p></div>
-      <div class="col"><div class="n">02</div><div class="k">Your existing IT partner</div>
-        <p>Advise on architecture and security, provision approved access, and run
-          production, change and incident management. We are not proposing to replace
-          anyone.</p></div>
-      <div class="col"><div class="n">03</div><div class="k">Angel</div>
-        <p>Ranks use cases, designs controls, assembles evidence and hands over. We
-          recommend no vendor and resell no licences.</p></div>
+      <div class="col"><div class="n">01</div><div class="k">Business authority</div>
+        <p>Owns the decision, outcome, risk acceptance, funding route and final go or no-go.</p></div>
+      <div class="col"><div class="n">02</div><div class="k">Delivery interface</div>
+        <p>Internal IT and existing partners confirm architecture, security, access and operational boundaries.</p></div>
+      <div class="col"><div class="n">03</div><div class="k">Scope partner</div>
+        <p>Angel frames the question, tests evidence, designs controls and hands over without creating a platform dependency.</p></div>
     </div>
-    <p class="lede rv" style="margin-top:30px;max-width:110ch;font-size:21px">We have
-      been told there is an established IT partner relationship and that it works. The
-      boundaries between group IT, local IT and any core-system contact are not ours to
-      assume, so this is a set of roles to confirm rather than a finished
-      responsibility matrix.</p>
+    <p class="lede rv" style="margin-top:30px;max-width:110ch;font-size:21px">The
+      names and boundaries are discovered in the meeting. This is a routing model, not a
+      finished responsibility matrix and not permission to bypass the current champion.</p>
   </div>
   <div class="foot rv">
     <div class="caption"><i></i>Alongside what already works</div>
-    <div class="cite"><b>Source:</b> stated to us by your team, August 2026
-      <span class="grade g-e">E</span>. We have deliberately not named any incumbent
-      provider or drawn a three-party responsibility matrix, because the actual
-      boundaries have not been confirmed to us.</div>
+    <div class="cite">The actual authority, procurement route and partner boundaries must be confirmed before scope is written.</div>
     <div class="num">07</div>
   </div>
 </section>
@@ -602,8 +529,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The proposed technical boundary</div>
-    <h1 class="xs rv">Use the existing estate. Isolate the proof. Write nothing back.</h1>
+    <div class="eyebrow rv">If decision readiness is selected</div>
+    <h1 class="xs rv">Use the existing estate. Isolate the analysis. Write nothing back.</h1>
     <div class="chartwrap rv">
       <svg class="chart" width="1500" height="200" viewBox="0 0 1500 200" role="img"
            aria-label="Approved read-only extracts flow into a time-boxed client-approved workspace, which produces a baseline, ranked options and a go or no-go decision. Nothing is written back to production.">
@@ -616,7 +543,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
         </g>
         <g class="pop d3">
           <rect x="560" y="20" width="380" height="100" rx="6" fill="rgba(3,8,18,.82)" stroke="rgba(53,234,210,.45)"/>
-          <text class="lbl" x="584" y="52" font-size="13" fill="#35ead2">TIME-BOXED WORKSPACE</text>
+          <text class="lbl" x="584" y="52" font-size="13" fill="#35ead2">CLIENT-APPROVED WORKSPACE</text>
           <text class="lbl" x="584" y="76" font-size="13.5">Approved by you, logged,</text>
           <text class="lbl" x="584" y="98" font-size="13.5">closed at handover</text>
         </g>
@@ -631,25 +558,18 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
       </svg>
     </div>
     <div class="cols c2 rv" style="margin-top:26px">
-      <div class="col"><div class="k">On existing licences</div>
-        <p>Capability you already own is the default. We resell nothing. Any new tool is
-          a separate decision you take, with a reason written down.</p></div>
-      <div class="col"><div class="k">On extraction and licensing</div>
-        <p>Whether a read-only extract carries a licensing consequence depends on your
-          product and your contract, so it is a question for your licence holder in
-          writing, not one we answer for you. The published policy meters document
-          creation rather than reads, which is why we expect a favourable answer.</p></div>
+      <div class="col"><div class="k">Use what is already approved</div>
+        <p>Existing capability is the default. We resell nothing. Any new tool is a
+          separate decision with an owner, reason and exit path.</p></div>
+      <div class="col"><div class="k">Confirm the boundary in writing</div>
+        <p>Before any extraction, the system and contract owners confirm the installed
+          product, extraction route, access controls and licence position. Read-only is
+          a technical boundary, not a licensing conclusion.</p></div>
     </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Existing estate &middot; Isolated proof</div>
-    <div class="cite"><b>Source:</b> SAP indirect and digital access policy, April 2018,
-      which meters the creation of nine document types rather than reads
-      <span class="grade g-d">D</span> (vendor published, like the maintenance notes on
-      slide 3; a licence holder's own statement of its terms, not an independent one).
-      Retrieved <time datetime="2026-08-16">16 August 2026</time>.
-      <b>We quote no figure for any licensing exposure.</b> Sizing that is your licence
-      holder's job and we would not put a number on it from the outside.</div>
+    <div class="caption"><i></i>Conditional boundary &middot; Confirmed by the owners</div>
+    <div class="cite">No production write-back. No licence conclusion from the outside. No technical work before written approval.</div>
     <div class="num">08</div>
   </div>
 </section>
@@ -661,47 +581,43 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The first engagement</div>
-    <h1 class="sm rv">Discovery ends with a decision, and stopping is one of the
-      designed outcomes.</h1>
+    <div class="eyebrow rv">The paid-next-step gate</div>
+    <h1 class="sm rv">Before work begins, the scoping conversation fixes the terms in writing.</h1>
     <div class="chartwrap rv">
       <svg class="chart" width="1500" height="188" viewBox="0 0 1500 188" role="img"
-           aria-label="Four stages: scope, baseline, rank, decide. Two stop gates, one after baseline and one before the decision. At either gate the work can stop and the client keeps everything produced.">
+           aria-label="Four terms fixed before work begins: question and owners, inputs and access, outputs and acceptance, fee timing and stop gates.">
         <line class="draw" style="--len:1360" x1="40" y1="62" x2="1400" y2="62"
               stroke="rgba(138,245,233,.28)" stroke-width="1.5"/>
         <g class="pop d1"><circle cx="40" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
           <text class="lbl" x="40" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">01</text>
-          <text class="lbl" x="40" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Scope</text>
-          <text class="lbl" x="40" y="118" font-size="12" text-anchor="middle">sponsor, owner, access</text></g>
+          <text class="lbl" x="40" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Question + owners</text>
+          <text class="lbl" x="40" y="118" font-size="12" text-anchor="middle">decision, sponsor, working lead</text></g>
         <g class="pop d2"><circle cx="493" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
           <text class="lbl" x="493" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">02</text>
-          <text class="lbl" x="493" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Baseline</text>
-          <text class="lbl" x="493" y="118" font-size="12" text-anchor="middle">time, cost, error rates</text></g>
+          <text class="lbl" x="493" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Inputs + access</text>
+          <text class="lbl" x="493" y="118" font-size="12" text-anchor="middle">facts, people, systems, boundaries</text></g>
         <g class="pop d3"><circle cx="946" cy="62" r="11" fill="#02060e" stroke="#35ead2" stroke-width="2"/>
           <text class="lbl" x="946" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">03</text>
-          <text class="lbl" x="946" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Rank</text>
-          <text class="lbl" x="946" y="118" font-size="12" text-anchor="middle">value, feasibility, risk</text></g>
+          <text class="lbl" x="946" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Outputs + acceptance</text>
+          <text class="lbl" x="946" y="118" font-size="12" text-anchor="middle">what arrives, who accepts, how judged</text></g>
         <g class="pop d4"><circle cx="1400" cy="62" r="13" fill="#02060e" stroke="#c9b98a" stroke-width="2.4"/>
           <text class="lbl" x="1400" y="34" font-size="12" fill="#c9b98a" text-anchor="middle">04</text>
-          <text class="lbl" x="1400" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Decide</text>
-          <text class="lbl" x="1400" y="118" font-size="12" text-anchor="middle">go, revise or stop</text></g>
+          <text class="lbl" x="1400" y="96" font-size="14" fill="#eef7f9" text-anchor="middle">Fee + timing</text>
+          <text class="lbl" x="1400" y="118" font-size="12" text-anchor="middle">price, dates, dependencies, stop gates</text></g>
         <!-- stop gates -->
         <g class="cfade" style="transition-delay:1.0s">
           <line x1="700" y1="30" x2="700" y2="94" stroke="#c98a8a" stroke-width="1.4" stroke-dasharray="4 5"/>
           <text class="lbl" x="712" y="34" font-size="12" fill="#c98a8a">stop gate</text>
           <line x1="1180" y1="30" x2="1180" y2="94" stroke="#c98a8a" stroke-width="1.4" stroke-dasharray="4 5"/>
           <text class="lbl" x="1192" y="34" font-size="12" fill="#c98a8a">stop gate</text>
-          <text class="lbl" x="40" y="164" font-size="13.5" fill="#a3bcc7">At either gate the work can stop at a cost agreed in advance, and you keep the baseline, the register, the control set and the decision log.</text>
+          <text class="lbl" x="40" y="164" font-size="13.5" fill="#a3bcc7">Scope, fee, access, deliverables and stop gates are agreed in writing before work starts.</text>
         </g>
       </svg>
     </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>A decision, not an automatic pilot</div>
-    <div class="cite"><b>Source:</b> our own offer <span class="grade g-e">E</span>.
-      No external figure appears on this slide. <b>No price, no saving and no duration
-      is quoted anywhere in this briefing</b>, because we have not yet seen a single
-      extract and any number offered before that would be invented.</div>
+    <div class="caption"><i></i>Scope first &middot; Then a paid, bounded engagement</div>
+    <div class="cite">No unpaid analysis, speculative saving or arbitrary duration. Price follows a defined question and explicit assumptions.</div>
     <div class="num">09</div>
   </div>
 </section>
@@ -713,35 +629,34 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">Named accountability</div>
-    <h1 class="sm rv">A named team accountable for outcomes, controls and delivery.</h1>
+    <div class="eyebrow rv">Why this team &middot; Senior core, evidence before assertion</div>
+    <h1 class="sm rv">A senior core team, with expertise attached to the question&mdash;not sold in advance.</h1>
     <div class="people rv">
       <div class="person"><div class="mono-badge">AD</div><div>
-        <h3>Andrew Demczuk</h3><div class="role">Applied AI Lead &middot; Vienna</div>
-        <p>Owns outcome definition, the economics of each use case and governance design.
-          References and documentary evidence available during diligence.</p></div></div>
-      <div class="person"><div class="mono-badge">WH</div><div>
-        <h3>Will Humphreys</h3><div class="role">Systems Engineer</div>
-        <p>Owns architecture, integrations, traceability and the controls that stop
-          safely when a check fails.</p></div></div>
+        <h3>Andrew Demczuk</h3><div class="role">Operating constraints to governed delivery</div>
+        <p>Public profiles document roles with ASIC, Defence Computing Bureau and EDS across
+          operations, service delivery and programme environments.</p></div></div>
       <div class="person"><div class="mono-badge">KS</div><div>
-        <h3>Keith Swoger</h3><div class="role">Solutions Architect</div>
-        <p>Owns scope boundaries, the security interface, handover and stop rules.</p></div></div>
+        <h3>Keith Swoger</h3><div class="role">Operational evidence to traceable implementation</div>
+        <p>First-party work in airline Tech Ops and AMOS, aircraft-record traceability and
+          release validation&mdash;where controls must survive contact with operations.</p></div></div>
+      <div class="person"><div class="mono-badge">?</div><div>
+        <h3>Specialist coverage</h3><div class="role">Named only when the scope requires it</div>
+        <p>The selected question determines the data, security, governance or system specialist.
+          Name, evidence, availability and accountability are confirmed before proposal.</p></div></div>
     </div>
-    <p class="lede rv" style="margin-top:28px;max-width:112ch;font-size:21px">Three
-      people, and no bench behind them. You would be an early client of this firm, and
-      we would rather you weighed that openly than discovered it later.</p>
+    <p class="lede rv" style="margin-top:28px;max-width:112ch;font-size:21px">The proposition
+      is deliberately small and senior: licence-neutral, alongside your internal team and IT
+      partner, beginning with a decision and its proof, then handing over what is built.</p>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>Named people &middot; Named responsibilities</div>
-    <div class="cite"><b>Verifiable now:</b> three merged fixes, checked
-      <time datetime="2026-08-16">16 Aug 2026</time> and openable without an account.
-      <code>openclaw/openclaw</code> <code>bffb83a</code>,
-      <code>omnigent-ai/omnigent</code> <code>8d1ceb0</code>,
-      <code>nimbalyst/nimbalyst</code> <code>7155256</code>. Ungraded because they are
-      the source rather than a report of one. <b>Scope:</b> engineering by one named
-      member of this team, not client outcomes and not delivery by this firm. No client
-      references claimed.</div>
+    <div class="caption"><i></i>Small senior core &middot; Specialist depth by scope</div>
+    <div class="cite"><b>Public profiles:</b>
+      <a href="https://at.linkedin.com/in/andrew-demczuk-4038a217" target="_blank" rel="noreferrer">Andrew</a>
+      &middot; <a href="https://www.xing.com/profile/Andrew_Demczuk" target="_blank" rel="noreferrer">Andrew (Xing)</a>
+      &middot; <a href="https://keithswoger.com/" target="_blank" rel="noreferrer">Keith</a>.
+      Public-profile claims remain diligence items; named capacity, references and specialist
+      appointments are confirmed before contract.</div>
     <div class="num">10</div>
   </div>
 </section>
@@ -753,17 +668,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
-    <div class="eyebrow rv">The only ask</div>
-    <h1 class="rv" style="max-width:36ch">We write one page.<br>You choose what it has to decide.</h1>
-    <p class="lede rv">That page names one decision you already have to take, who owns it,
-      what evidence would settle it, and what would make the answer no.</p>
-    <p class="lede rv">It commits no budget and binds nobody. If the answer is no, we
-      would rather have that today than a polite yes.</p>
+    <div class="eyebrow rv">The decision requested</div>
+    <h1 class="sm rv" style="max-width:34ch">Leave with one of two valid outcomes.</h1>
+    <div class="cols c2 rv">
+      <div class="col"><div class="k">If there is fit</div>
+        <p>Select the first question. Name the sponsor, decision owner and working lead.
+          Identify the required proof and the funding or procurement route. Book the
+          scoping conversation with named participants and a date.</p></div>
+      <div class="col"><div class="k">If not yet</div>
+        <p>Name the exact missing proof, stakeholder or decision. Give the gap an owner
+          and a date for resolution. Do not manufacture a polite yes.</p></div>
+    </div>
   </div>
   <div class="foot rv">
-    <div class="caption"><i></i>The ask is a page, not a pilot</div>
-    <div class="cite"><b>Sources on this slide:</b> none. This page states our ask only.
-      Prepared by Angel Software Solutions LLC for discussion on
+    <div class="caption"><i></i>One truthful next step &middot; Or one explicit gap</div>
+    <div class="cite"><b>Boundary for today:</b> no pilot, platform, programme, budget or
+      unpaid analysis is approved. Prepared by Angel Software Solutions LLC for discussion on
       <time datetime="2026-08-17">17 August 2026</time>.</div>
     <div class="num">11</div>
   </div>
@@ -773,6 +693,26 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <div id="rail"><i id="railfill"></i></div>
 </div></div>
 <div class="hud" id="hud"></div>
+<span class="sr-only" id="announcer" role="status" aria-live="polite" aria-atomic="true"></span>
+
+<nav class="deck-controls" aria-label="Presentation controls">
+  <button type="button" id="prev" aria-label="Previous slide">&larr;</button>
+  <span id="status" role="status" aria-live="polite">1 / 11</span>
+  <button type="button" id="next" aria-label="Next slide">&rarr;</button>
+  <button type="button" id="motion" aria-pressed="false">Motion: off</button>
+  <button type="button" id="handout">Print</button>
+</nav>
+
+<aside class="portrait-note" aria-label="Compact viewing options">
+  <div>
+    <div class="k">Executive briefing &middot; 11 slides</div>
+    <h2>Open the deck in a larger landscape view.</h2>
+    <p>Rotate your device or enlarge the window. The presentation is designed for
+      a shared 16:9 room. You can also open the
+      complete landscape handout, including the source notes and decision boundaries.</p>
+    <button type="button" id="portraitHandout">Print or save the handout</button>
+  </div>
+</aside>
 
 <script>
 (function(){
@@ -781,18 +721,33 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
   var tv     = document.getElementById("tv");
   var hud    = document.getElementById("hud");
+  var announcer = document.getElementById("announcer");
   var fill   = document.getElementById("railfill");
-  var current = 0, inTransit = false;
+  var status = document.getElementById("status");
+  var prev   = document.getElementById("prev");
+  var next   = document.getElementById("next");
+  var motion = document.getElementById("motion");
+  var handout = document.getElementById("handout");
+  var portraitHandout = document.getElementById("portraitHandout");
+
+  function slideFromHash(){
+    var m = /^#s(\d{1,2})$/.exec(location.hash);
+    if(!m) return null;
+    var n = Number(m[1]) - 1;
+    return n >= 0 && n < slides.length ? n : null;
+  }
+
+  var current = slideFromHash();
+  if(current === null) current = 0;
+  var inTransit = false, transitDest = null, transitHistory = "push";
 
   /* ---- scale the fixed 1920x1080 stage into the viewport ---- */
   function fitStage(){
     var k = Math.min(innerWidth/1920, innerHeight/1080);
     stage.style.setProperty("--k", k);
-    /* Citation size is chosen so the RENDERED height holds at ~13px however
-       far the stage is scaled down. On a shared window at k=0.56 a fixed 12px
-       citation lands at 6.7px, which is unreadable, and the citations are the
-       one thing on this deck the reader is invited to check. */
-    var fs = Math.min(20, Math.max(15, 13 / k));
+    /* Hold the RENDERED citation size at about 13px in usable shared landscape
+       windows. Smaller windows get the explicit handout fallback above. */
+    var fs = Math.min(28, Math.max(15, 13 / k));
     stage.style.setProperty("--citefs", fs.toFixed(2) + "px");
   }
   addEventListener("resize", fitStage, {passive:true});
@@ -812,28 +767,59 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     "6-7":"PartnerDA7-8.mp4",  "7-8":"PartnerDA8-9.mp4",  "8-9":"PartnerDA9-10.mp4",
     "9-10":"PartnerDA10-11.mp4"
   };
+  /* Motion remains part of the deck, but only at the two chapter changes where
+     it adds meaning: proposition -> engagement and team -> decision. */
+  var CINEMATIC = {"7-8":1,"9-10":1};
 
   var stored=null; try{ stored=localStorage.getItem("tpClips"); }catch(e){}
-  /* First-visit default honours the OS reduced-motion preference: a reader who
-     has asked their system for less motion gets instant transitions from the
-     first keypress. The CSS block near the top already calms the small reveals;
-     this covers the full-screen clips, which are the motion that matters. An
-     explicit T press (stored) still wins in either direction. */
-  var reduceMotion = false;
-  try { reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch(e){}
-  var clipsOn = stored ? (stored==="on") : !reduceMotion;
+  /* Cinematic motion is opt-in. The operating-system preference is an absolute
+     veto, including when an older browser session stored "on". */
+  var motionQuery = null, reduceMotion = false;
+  try {
+    motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
+    reduceMotion = motionQuery.matches;
+  } catch(e){}
+  var userMotionOn = stored === "on";
+  var clipsOn = userMotionOn && !reduceMotion;
 
   function paint(){
-    slides.forEach(function(s,i){ s.classList.toggle("active", i===current); });
+    slides.forEach(function(s,i){
+      var active = i === current;
+      s.classList.toggle("active", active);
+      s.setAttribute("aria-hidden", active ? "false" : "true");
+      if(active) s.removeAttribute("inert"); else s.setAttribute("inert", "");
+    });
     fill.style.width = (((current+1)/slides.length)*100).toFixed(2) + "%";
-    /* Kept current for the moments the hud is actually surfaced, but never
-       shown on its own: the client is watching this screen. */
-    hud.textContent = (current+1) + " / " + slides.length;
+    var count = (current+1) + " / " + slides.length;
+    status.textContent = count;
+    hud.textContent = count;
+    prev.disabled = current === 0 && !inTransit;
+    next.disabled = current === slides.length - 1 && !inTransit;
+    motion.setAttribute("aria-pressed", clipsOn ? "true" : "false");
+    motion.textContent = reduceMotion ? "Motion: system off" : clipsOn ? "Motion: on" : "Motion: off";
   }
-  function commit(n){ current=n; paint(); tv.classList.remove("show"); warm(n); }
-  /* warm(n), not warm(n+1): arriving at slide n, the clip needed NEXT is the
-     one leaving n. Prefetching n+1 warms the clip after the one about to be
-     used, so every transition still raced a cold fetch. */
+
+  function writeHash(n, mode){
+    if(!mode || !history || !history.pushState) return;
+    var hash = "#s" + (n + 1);
+    if(mode === "replace") history.replaceState(null, "", hash);
+    else if(location.hash !== hash) history.pushState(null, "", hash);
+  }
+
+  function commit(n, historyMode){
+    var activeElement = document.activeElement;
+    var moveFocus = activeElement && slides[current].contains(activeElement);
+    current=n;
+    paint();
+    if(moveFocus){
+      var focusTarget = slides[n].querySelector("h1") || slides[n];
+      focusTarget.setAttribute("tabindex", "-1");
+      try{ focusTarget.focus({preventScroll:true}); }catch(e){ focusTarget.focus(); }
+    }
+    tv.classList.remove("show");
+    writeHash(n, historyMode);
+    warm(n);
+  }
 
   /* WARM THE NEXT CLIP WHILE THE READER IS ON THIS SLIDE.
      Sources were only attached at transition time, so the first move after a
@@ -846,7 +832,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   var warmed = {};
   function warm(n){
     var clip = CLIPS[n + "-" + (n + 1)];
-    if(!clip || warmed[clip] || !clipsOn) return;
+    if(!clip || !CINEMATIC[n + "-" + (n + 1)] || warmed[clip] || !clipsOn) return;
     warmed[clip] = 1;
     try {
       var l = document.createElement("link");
@@ -861,32 +847,44 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
      has moved the world on. Without this, skipping before the reveal
      leaves the clip playing and its timeupdate re-shows the overlay over
      an already-committed slide. */
-  var seq = 0;
+  var seq = 0, guard = null;
+  function cancelTransit(){
+    if(!inTransit) return;
+    inTransit=false; seq++;
+    clearTimeout(guard); guard=null;
+    try{ tv.pause(); }catch(e){}
+    tv.ontimeupdate = tv.onended = tv.onerror = null;
+    tv.classList.remove("show");
+    while(tv.firstChild) tv.removeChild(tv.firstChild);
+    transitDest=null;
+    paint();
+  }
+
   function endTransit(n, mySeq){
     if(mySeq!==undefined && mySeq!==seq) return;
     if(!inTransit) return;
     inTransit=false; seq++;
+    clearTimeout(guard); guard=null;
     try{ tv.pause(); }catch(e){}
     tv.ontimeupdate = tv.onended = tv.onerror = null;
-    commit(n);
+    transitDest=null;
+    commit(n, transitHistory);
     setTimeout(function(){
       if(!inTransit){ while(tv.firstChild) tv.removeChild(tv.firstChild); try{ tv.load(); }catch(e){} }
     },500);
   }
 
-  function go(n){
-    if(inTransit) return;
+  function go(n, historyMode){
+    if(inTransit) cancelTransit();
     if(n<0 || n>=slides.length || n===current) return;
     var clip = CLIPS[current+"-"+n], forward = n>current;
-    if(!forward || !clip){ commit(n); return; }
-    /* Silent. The driver only reaches this state by pressing T deliberately
-       and already got confirmation then, so announcing it again on every
-       later advance tells him nothing and flashes presenter instructions at
-       the client, in the one situation where something has already visibly
-       gone wrong. */
-    if(!clipsOn){ commit(n); return; }
+    var chapter = CINEMATIC[current+"-"+n];
+    if(!forward || !clip || !chapter || !clipsOn){ commit(n, historyMode || "push"); return; }
 
     inTransit=true;
+    transitDest=n;
+    transitHistory=historyMode || "push";
+    paint();
     var mySeq = ++seq;
     var destBg = slides[n].querySelector(".bg");
     if(destBg && destBg.decode) destBg.decode().catch(function(){});
@@ -894,21 +892,23 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
     var s1=document.createElement("source"); s1.src=clip.replace(/\.mp4$/,".webm"); s1.type="video/webm";
     var s2=document.createElement("source"); s2.src=clip; s2.type="video/mp4";
     /* <source>-mode failures fire on the LAST source, never on <video>. */
-    s2.onerror=function(){ if(seq!==mySeq) return; clearTimeout(guard); endTransit(n,mySeq); };
+    s2.onerror=function(){ if(seq!==mySeq) return; endTransit(n,mySeq); };
     tv.appendChild(s1); tv.appendChild(s2); tv.load();
+    tv.defaultPlaybackRate=2.75;
+    tv.playbackRate=2.75;
 
     var revealed=false;
     tv.ontimeupdate=function(){
       if(seq!==mySeq) return;
       if(!revealed && tv.currentTime>0.2){ revealed=true; tv.classList.add("show"); }
       /* end AT the settle point; the clip carries a still safety tail */
-      if(tv.duration && tv.currentTime >= tv.duration-1.2){ clearTimeout(guard); endTransit(n,mySeq); }
+      if(tv.duration && tv.currentTime >= tv.duration-1.2){ endTransit(n,mySeq); }
     };
-    var guard=setTimeout(function(){ endTransit(n,mySeq); },10000);
-    tv.onended=function(){ clearTimeout(guard); endTransit(n,mySeq); };
-    tv.onerror=function(){ clearTimeout(guard); endTransit(n,mySeq); };
+    guard=setTimeout(function(){ endTransit(n,mySeq); },3500);
+    tv.onended=function(){ endTransit(n,mySeq); };
+    tv.onerror=function(){ endTransit(n,mySeq); };
     var p=tv.play();
-    if(p&&p.catch) p.catch(function(){ if(seq!==mySeq) return; clearTimeout(guard); endTransit(n,mySeq); });
+    if(p&&p.catch) p.catch(function(){ if(seq!==mySeq) return; endTransit(n,mySeq); });
   }
 
   /* Surface the hud only for a beat, and only in response to a deliberate
@@ -918,21 +918,62 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   function note(msg){
     hud.textContent = msg;
     hud.classList.add("show");
+    if(announcer){
+      announcer.textContent = "";
+      setTimeout(function(){ announcer.textContent = msg; }, 0);
+    }
     clearTimeout(noteTimer);
     noteTimer = setTimeout(function(){ hud.classList.remove("show"); paint(); }, 2600);
   }
 
-  document.addEventListener("keydown", function(e){
-    if(e.key==="t"||e.key==="T"){
-      clipsOn=!clipsOn;
-      try{ localStorage.setItem("tpClips", clipsOn?"on":"off"); }catch(err){}
-      note(clipsOn?"motion on":"motion off, transitions instant"); return;
+  function setMotion(on, persist, announce){
+    if(reduceMotion && on){
+      if(announce) note("motion remains off: system reduced-motion is enabled");
+      return;
     }
-    if(inTransit){ e.preventDefault(); if(tv.onended) tv.onended(); return; }
-    if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") go(current+1);
-    if(e.key==="ArrowLeft"||e.key==="PageUp") go(current-1);
-    if(e.key==="Home") go(0);
-    if(e.key==="End") go(slides.length-1);
+    userMotionOn=!!on;
+    clipsOn=userMotionOn && !reduceMotion;
+    if(!clipsOn && inTransit) cancelTransit();
+    if(persist){
+      try{ localStorage.setItem("tpClips", userMotionOn ? "on" : "off"); }catch(err){}
+    }
+    paint(); warm(current);
+    if(announce) note(clipsOn ? "cinematic motion on at two chapter changes" : "motion off");
+  }
+
+  /* Toggle the saved user intent, not the effective state. Otherwise a stored
+     "on" cannot be cleared while the OS reduced-motion veto is active. */
+  function toggleMotion(){ setMotion(!userMotionOn, true, true); }
+
+  if(motionQuery){
+    var motionChanged=function(e){
+      reduceMotion=e.matches;
+      clipsOn=userMotionOn && !reduceMotion;
+      if(reduceMotion && inTransit) cancelTransit();
+      paint();
+      if(reduceMotion) note("motion disabled by system preference"); else warm(current);
+    };
+    if(motionQuery.addEventListener) motionQuery.addEventListener("change", motionChanged);
+    else if(motionQuery.addListener) motionQuery.addListener(motionChanged);
+  }
+
+  document.addEventListener("keydown", function(e){
+    var target = e.target;
+    if(target && target.closest &&
+       target.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"])')) return;
+    /* Preserve activation keys on controls while keeping deck navigation keys
+       available after a presenter has clicked one of them. */
+    if(e.key === " " && target && target.closest && target.closest("button,a")) return;
+    if(e.key==="t"||e.key==="T"){
+      e.preventDefault(); toggleMotion(); return;
+    }
+    var base = inTransit && transitDest!==null ? transitDest : current;
+    var dest = null;
+    if(e.key==="ArrowRight"||e.key===" "||e.key==="PageDown") dest=base+1;
+    if(e.key==="ArrowLeft"||e.key==="PageUp") dest=base-1;
+    if(e.key==="Home") dest=0;
+    if(e.key==="End") dest=slides.length-1;
+    if(dest!==null){ e.preventDefault(); go(dest); }
   });
   /* A click that merely restores focus to the browser must not advance the
      deck. Over a screen share the presenter clicks the window to bring it
@@ -942,28 +983,52 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
   addEventListener("focus", function(){ focusedAt = Date.now(); });
   addEventListener("blur",  function(){ focusedAt = 0; });
   document.addEventListener("pointerdown", function(e){
-    if(e.target.closest("a")) return;              /* let citation links work */
+    if(e.pointerType && e.pointerType !== "mouse") return; /* touch is swipe-only below */
+    if(e.target.closest("a,button")) return;       /* let links and controls work */
     if(Date.now() - focusedAt < 500){ focusedAt = 0; return; }   /* focus-restoring click */
     if(getSelection && String(getSelection()) ) return;          /* reading, not navigating */
-    if(inTransit){ if(tv.onended) tv.onended(); return; }
+    if(inTransit){ var n=transitDest; cancelTransit(); commit(n,"push"); return; }
     go(current + (e.clientX > innerWidth/2 ? 1 : -1));
   });
   /* touch: horizontal swipe only, so vertical scroll gestures do not page */
-  var tx=0, ty=0;
+  var tx=0, ty=0, trackingTouch=false;
   document.addEventListener("touchstart",function(e){
+    if(e.touches.length !== 1){ trackingTouch=false; return; }
+    trackingTouch=true;
     tx=e.changedTouches[0].clientX; ty=e.changedTouches[0].clientY;
   },{passive:true});
   document.addEventListener("touchend",function(e){
+    if(!trackingTouch || !e.changedTouches.length) return;
+    trackingTouch=false;
     var dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
-    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(current + (dx<0?1:-1));
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) go(navBase() + (dx<0?1:-1));
   },{passive:true});
+  document.addEventListener("touchcancel",function(){ trackingTouch=false; },{passive:true});
 
-  try{ console.log("motion build v10 - live text, charts and citations"); }catch(e){}
+  function navBase(){ return inTransit && transitDest!==null ? transitDest : current; }
+  prev.addEventListener("click",function(){ go(navBase()-1); });
+  next.addEventListener("click",function(){ go(navBase()+1); });
+  motion.addEventListener("click",toggleMotion);
+  handout.addEventListener("click",function(){ window.print(); });
+  portraitHandout.addEventListener("click",function(){ window.print(); });
+
+  function syncFromLocation(){
+    var n=slideFromHash();
+    if(n===null || n===current) return;
+    if(inTransit) cancelTransit();
+    commit(n,false);
+  }
+  addEventListener("popstate",syncFromLocation);
+  addEventListener("hashchange",syncFromLocation);
+
+  try{ console.log("motion build v11 - decision close, source links and accessible controls"); }catch(e){}
   window.__proto_state=function(){ return {current:current,inTransit:inTransit,clipsOn:clipsOn,
-    videoTime:tv.currentTime,videoShown:tv.classList.contains("show")}; };
+    reduceMotion:reduceMotion,transitDest:transitDest,videoTime:tv.currentTime,
+    videoShown:tv.classList.contains("show")}; };
   window.__proto_go=go;
   paint();
-  warm(0);   /* first move should never race a cold fetch */
+  writeHash(current,"replace");
+  warm(current);
 })();
 </script>
 </body>

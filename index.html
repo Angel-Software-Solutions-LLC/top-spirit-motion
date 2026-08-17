@@ -54,7 +54,7 @@ html,body{margin:0;height:100%;background:var(--navy-950);overflow:hidden;
 
 /* ---------- persistent chrome ---------- */
 .brand{position:absolute;left:104px;top:56px;display:flex;gap:16px;align-items:center;z-index:3}
-.brand svg{width:44px;height:auto;opacity:.92}
+.brand svg{width:88px;height:auto;opacity:.92}
 .brand b{display:block;font:600 15px/1.2 var(--font);letter-spacing:.14em;text-transform:uppercase}
 .brand span{display:block;font:400 11px/1.4 var(--mono);letter-spacing:.22em;
   text-transform:uppercase;color:var(--dim);margin-top:3px}
@@ -230,6 +230,25 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 </style>
 </head>
 <body>
+<!-- Brand mark. Source: https://angel-serv.com/img/ethereal-wings-dark-icon.svg
+     Vendored rather than hotlinked so the deck cannot be blanked by an external host,
+     and stroke widths doubled so the fine wing strokes survive video compression at
+     header size. Geometry is unchanged. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="asl-mark" viewBox="-36 10 272 84">
+    <!-- Halo (elegant arc) -->
+    <path d="M55 42 Q100 12 145 42" fill="none" stroke="#c9b98a" stroke-width="5.00" stroke-linecap="round"/>
+    <!-- Left Wing -->
+    <path d="M100 70 Q70 55 30 48 Q0 44 -32 50 Q-10 52 20 60 Q55 70 75 80" fill="none" stroke="#e8e4df" stroke-width="3.60" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 70 Q75 60 40 56 Q10 54 -20 62 Q5 62 35 68 Q65 76 85 85" fill="none" stroke="#e8e4df" stroke-width="2.80" stroke-linecap="round" opacity="0.7"/>
+    <path d="M100 70 Q80 65 50 65 Q25 66 0 76 Q25 72 50 76 Q75 82 92 90" fill="none" stroke="#e8e4df" stroke-width="2.00" stroke-linecap="round" opacity="0.45"/>
+    <!-- Right Wing -->
+    <path d="M100 70 Q130 55 170 48 Q200 44 232 50 Q210 52 180 60 Q145 70 125 80" fill="none" stroke="#e8e4df" stroke-width="3.60" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M100 70 Q125 60 160 56 Q190 54 220 62 Q195 62 165 68 Q135 76 115 85" fill="none" stroke="#e8e4df" stroke-width="2.80" stroke-linecap="round" opacity="0.7"/>
+    <path d="M100 70 Q120 65 150 65 Q175 66 200 76 Q175 72 150 76 Q125 82 108 90" fill="none" stroke="#e8e4df" stroke-width="2.00" stroke-linecap="round" opacity="0.45"/>
+  </symbol>
+</defs></svg>
+
 
 <div id="fit"><div id="stage">
 
@@ -237,7 +256,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide active" id="s1" aria-label="Slide 1 of 11">
   <img class="bg" src="media/slide-bg-01.webp" alt="" fetchpriority="high">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <!-- Navigation only. The motion key is presenter knowledge and naming it here
        would put it on the client's screen, which is the thing the hidden hud
@@ -275,7 +294,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s2" aria-label="Slide 2 of 11">
   <img class="bg" src="media/slide-bg-02.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The executive risk</div>
@@ -315,7 +334,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide wide" id="s3" aria-label="Slide 3 of 11">
   <img class="bg" src="media/slide-bg-03.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The planning window</div>
@@ -419,7 +438,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s4" aria-label="Slide 4 of 11">
   <img class="bg" src="media/slide-bg-04.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The brief as we understand it, to confirm</div>
@@ -448,7 +467,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s5" aria-label="Slide 5 of 11">
   <img class="bg" src="media/slide-bg-05.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The continuity case</div>
@@ -483,7 +502,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s6" aria-label="Slide 6 of 11">
   <img class="bg" src="media/slide-bg-06.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The governance minimum</div>
@@ -523,7 +542,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s7" aria-label="Slide 7 of 11">
   <img class="bg" src="media/slide-bg-07.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The operating model</div>
@@ -560,7 +579,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s8" aria-label="Slide 8 of 11">
   <img class="bg" src="media/slide-bg-08.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The proposed technical boundary</div>
@@ -619,7 +638,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s9" aria-label="Slide 9 of 11">
   <img class="bg" src="media/slide-bg-09.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The first engagement</div>
@@ -671,7 +690,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide" id="s10" aria-label="Slide 10 of 11">
   <img class="bg" src="media/slide-bg-10.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">Named accountability</div>
@@ -711,7 +730,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--aqua);outline-offse
 <section class="slide wide" id="s11" aria-label="Slide 11 of 11">
   <img class="bg" src="media/slide-bg-11.webp" alt="">
   <div class="wash"></div>
-  <div class="brand"><svg viewBox="0 0 64 26" aria-hidden="true"><path d="M2 20c10-9 20-14 30-14s20 5 30 14" fill="none" stroke="#35ead2" stroke-width="1.6"/><path d="M8 24c8-7 16-11 24-11s16 4 24 11" fill="none" stroke="#8af5e9" stroke-width="1.1" opacity=".7"/></svg>
+  <div class="brand"><svg class="mark" viewBox="-36 10 272 84" aria-hidden="true"><use href="#asl-mark"/></svg>
     <div><b>Angel Software Solutions</b><span>Technology consulting</span></div></div>
   <div class="body">
     <div class="eyebrow rv">The decision requested</div>

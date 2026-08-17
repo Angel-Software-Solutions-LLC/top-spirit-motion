@@ -13,6 +13,11 @@ You are welcome to. That is why the repository is public rather than a PDF in
 an email. Four things are worth checking, and all four are checkable without
 asking us anything.
 
+If your evaluation runs through an AI assistant, point it at
+[briefing-for-your-ai-assistant.md](briefing-for-your-ai-assistant.md): the
+same claims with sources and grades, what we will not do, and the questions
+it should be asking us.
+
 **1. Every external claim carries a source, a date and a grade.** The grades
 are printed on slide 1 and used consistently:
 
